@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>favicon.ico</file>
+        <file>icons/open_image_file_ic.png</file>
+        <file>icons/zoom_in_ic.png</file>
+        <file>icons/zoom_out_ic.png</file>
+    </qresource>
+</RCC>
