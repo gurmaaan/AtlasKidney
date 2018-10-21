@@ -1,8 +1,63 @@
 <RCC>
     <qresource prefix="/icons">
         <file>favicon.ico</file>
-        <file>icons/open_image_file_ic.png</file>
         <file>icons/zoom_in_ic.png</file>
         <file>icons/zoom_out_ic.png</file>
+        <file>icons/about_ic.png</file>
+        <file>icons/add.png</file>
+        <file>icons/add_param_ic.png</file>
+        <file>icons/algorithm.png</file>
+        <file>icons/apply_filter_chenges_ic.png</file>
+        <file>icons/bright_type_ic.png</file>
+        <file>icons/build.png</file>
+        <file>icons/calc.png</file>
+        <file>icons/change_filter_color_ic.png</file>
+        <file>icons/change_param_ic.png</file>
+        <file>icons/chart.png</file>
+        <file>icons/close_all_ic.png</file>
+        <file>icons/close_image_ic.png</file>
+        <file>icons/closeFile.png</file>
+        <file>icons/color.png</file>
+        <file>icons/create_filter_ic.png</file>
+        <file>icons/custom.png</file>
+        <file>icons/data_file_reference_icon.png</file>
+        <file>icons/delete_groups_object_ic.png</file>
+        <file>icons/delete_param_ic.png</file>
+        <file>icons/dev_manual_icon.png</file>
+        <file>icons/exchenge_groups_objects_ic.png</file>
+        <file>icons/exit_ic.png</file>
+        <file>icons/favicon.png</file>
+        <file>icons/fileA.png</file>
+        <file>icons/fileB.png</file>
+        <file>icons/filter_icon.png</file>
+        <file>icons/full_screen_ic.png</file>
+        <file>icons/geom_type_ic.png</file>
+        <file>icons/github.png</file>
+        <file>icons/graph.png</file>
+        <file>icons/info.png</file>
+        <file>icons/next_ic.png</file>
+        <file>icons/open_dataFile_ic.png</file>
+        <file>icons/open_folder_ic.png</file>
+        <file>icons/open_image_ic.png</file>
+        <file>icons/points.png</file>
+        <file>icons/previous_ic.png</file>
+        <file>icons/quit.png</file>
+        <file>icons/quit_app_ic.png</file>
+        <file>icons/random.png</file>
+        <file>icons/remove_filter_ic.png</file>
+        <file>icons/rename_filter_ic.png</file>
+        <file>icons/restart_ic.png</file>
+        <file>icons/save_filter_ic.png</file>
+        <file>icons/save_groups_objects_ic.png</file>
+        <file>icons/save_image_as_ic.png</file>
+        <file>icons/save_separation_ic.png</file>
+        <file>icons/settings_ic.png</file>
+        <file>icons/shortcuts.png</file>
+        <file>icons/slideshow_ic.png</file>
+        <file>icons/tableA.png</file>
+        <file>icons/tableB.png</file>
+        <file>icons/text_type_ic.png</file>
+        <file>icons/user_manual_ic.png</file>
+        <file>icons/view_groups_objects_ic.png</file>
     </qresource>
 </RCC>
