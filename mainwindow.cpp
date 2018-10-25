@@ -6,10 +6,30 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    showFullScreen();
+
+    showMaximized();
+    authDialog = new AuthDialog();
+    authDialog->show();
+
+    connectAll();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::enableMainWindow(bool authStatus)
+{
+    if(authStatus)
+    {
+        ui->settingsDock->setEnabled(authStatus);
+        ui->label->setEnabled(authStatus);
+    }
+}
+
+void MainWindow::connectAll()
+{
+    connect(authDialog, &AuthDialog::authStatusChanged,
+            this, &MainWindow::enableMainWindow);
 }

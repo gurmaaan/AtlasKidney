@@ -1,12 +1,12 @@
 #include "mainwindow.h"
 #include "dialogs/authdialog.h"
+#include "mainwindow.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    AuthDialog authD;
-    authD.show();
-
+    MainWindow mainD;
+    mainD.show();
     return a.exec();
 }

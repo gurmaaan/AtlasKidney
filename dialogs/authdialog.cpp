@@ -1,6 +1,6 @@
 #include "authdialog.h"
 #include "ui_authdialog.h"
-#include <QStandardPaths>
+
 
 AuthDialog::AuthDialog(QWidget *parent) :
     QDialog(parent),
@@ -21,6 +21,7 @@ void AuthDialog::on_path_btn_clicked()
                                                 QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
                                                 QFileDialog::ShowDirsOnly
                                                 | QFileDialog::DontResolveSymlinks);
+    emit rootPathChanged(dir);
     ui->path_le->setText(dir);
 }
 
@@ -30,23 +31,49 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
     if(button == btnList.at(0))
     {
         // Ok button action
-        qDebug() << "Ok";
-        //Vanya ebash proverku i avtorizaciu zdes
-        MainWindow mainWindowDialog;
-        mainWindowDialog.show();
-        //close();
+
+        //TODO: Vanya ebash proverku i avtorizaciu zdes
+        //
+        if(okOption("Fartu masti", "AUE") && !QDir(QDir::fromNativeSeparators(ui->password_le->text())).exists())
+        {
+            //BUG: какого-то хуя папка не существует при проверке экзистом поставлен воскл знак в качестве костыля
+            qDebug() << "Yes!!!!!";
+            emit authStatusChanged(true);
+            close();
+        }
+        else
+        {
+            resetOption();
+            QMessageBox::critical(nullptr, AUTH_MSG_TITTLE, AUTH_MSG_BODY);
+        }
     } else if (button == btnList.at(1))
     {
         //Close button action
-        qDebug() << "Close";
-        close();
-
+        closeOption();
     }else if (button == btnList.at(2))
     {
         //Reset button action
-        ui->password_le->clear();
-        ui->login_le->clear();
-        ui->path_le->clear();
-        qDebug() << "Reset";
+        resetOption();
     }
+}
+
+bool AuthDialog::okOption(QString login, QString password)
+{
+    qDebug() << "Ok";
+    bool accessGranted = ((ui->login_le->text() == login) && (ui->path_le->text() == password)) ? false : true;
+    return accessGranted;
+}
+
+void AuthDialog::closeOption()
+{
+    qDebug() << "Close";
+    close();
+}
+
+void AuthDialog::resetOption()
+{
+    ui->password_le->clear();
+    ui->login_le->clear();
+    ui->path_le->clear();
+    qDebug() << "Reset";
 }
