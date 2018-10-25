@@ -28,9 +28,8 @@ public:
         auto ans = db.exec(query);
 
         ans.first();
-//        qDebug() << ans.value("cnt").toString();// << ans.value(1).toInt();
+        qDebug() << ans.value(1).toInt();
 
-//        exit(123);
         return ans.value("cnt").toString()=="1" ? true : false;
     }
 
