@@ -27,16 +27,19 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    dialogs/authdialog.cpp
+        dialogs/authdialog.cpp \
+        widgets/imagewidget.cpp
 
 HEADERS += \
         mainwindow.h \
-    dialogs/authdialog.h \
-    static.h
+        static.h \
+        dialogs/authdialog.h \
+        widgets/imagewidget.h
 
 FORMS += \
         mainwindow.ui \
-    dialogs/authdialog.ui
+        dialogs/authdialog.ui \
+        widgets/imagewidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
