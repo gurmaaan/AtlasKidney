@@ -11,6 +11,7 @@
 #include <QDir>
 //
 #include "static.h"
+#include "db_connector.h"
 
 
 namespace Ui {
@@ -22,7 +23,7 @@ class AuthDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AuthDialog(QWidget *parent = nullptr);
+    explicit AuthDialog(DB_connector& db, QWidget *parent = nullptr);
     ~AuthDialog();
 
 private slots:
@@ -30,7 +31,7 @@ private slots:
     void on_buttonBox_clicked(QAbstractButton *button);
 
 signals:
-    void authStatusChanged(bool acсessGranted);
+    void authStatusChanged(bool accessGranted);
     void rootPathChanged(QString pathToFold);
 
 private:
@@ -38,6 +39,7 @@ private:
     bool okOption(QString login, QString password);
     void closeOption();
     void resetOption();
+    DB_connector db;
 };
 
 #endif // AUTHDIALOG_H

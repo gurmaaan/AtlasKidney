@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 #include <QtDebug>
-//
 #include <dialogs/authdialog.h>
+
+#include "db_connector.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,7 @@ private:
     Ui::MainWindow *ui;
     AuthDialog *authDialog;
     void connectAll();
+    DB_connector db;
 };
 
 #endif // MAINWINDOW_H

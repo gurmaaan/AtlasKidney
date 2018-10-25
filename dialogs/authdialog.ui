@@ -2,11 +2,14 @@
 <ui version="4.0">
  <class>AuthDialog</class>
  <widget class="QDialog" name="AuthDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
+    <width>400</width>
     <height>284</height>
    </rect>
   </property>
@@ -64,6 +67,9 @@
        <property name="styleSheet">
         <string notr="true">color: black;</string>
        </property>
+       <property name="text">
+        <string>admin_db</string>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -83,6 +89,9 @@
        </property>
        <property name="styleSheet">
         <string notr="true">color:black;</string>
+       </property>
+       <property name="text">
+        <string>admin_db_</string>
        </property>
       </widget>
      </item>

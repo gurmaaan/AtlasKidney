@@ -8,10 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     showMaximized();
-    authDialog = new AuthDialog();
+    authDialog = new AuthDialog(db);
     authDialog->show();
 
     connectAll();
+
+
 }
 
 MainWindow::~MainWindow()
