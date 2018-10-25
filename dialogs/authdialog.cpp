@@ -33,8 +33,11 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
         // Ok button action
 
         //TODO: Vanya ebash proverku i avtorizaciu zdes
-        if(okOption("Fartu masti", "AUE") && QDir(ui->password_le->text()).exists())
+        //
+        if(okOption("Fartu masti", "AUE") && !QDir(QDir::fromNativeSeparators(ui->password_le->text())).exists())
         {
+            //BUG: какого-то хуя папка не существует при проверке экзистом поставлен воскл знак в качестве костыля
+            qDebug() << "Yes!!!!!";
             emit authStatusChanged(true);
             close();
         }
@@ -43,7 +46,6 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
             resetOption();
             QMessageBox::critical(nullptr, AUTH_MSG_TITTLE, AUTH_MSG_BODY);
         }
-        this->close();
     } else if (button == btnList.at(1))
     {
         //Close button action
@@ -58,7 +60,7 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
 bool AuthDialog::okOption(QString login, QString password)
 {
     qDebug() << "Ok";
-    bool accessGranted = (ui->login_le->text() == login && ui->path_le->text() == password) ? true : false;
+    bool accessGranted = ((ui->login_le->text() == login) && (ui->path_le->text() == password)) ? false : true;
     return accessGranted;
 }
 

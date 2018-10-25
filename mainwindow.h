@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QtDebug>
+//
+#include <dialogs/authdialog.h>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +23,8 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+    AuthDialog *authDialog;
+    void connectAll();
 };
 
 #endif // MAINWINDOW_H
