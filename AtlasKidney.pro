@@ -31,7 +31,8 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-    dialogs/authdialog.h
+    dialogs/authdialog.h \
+    static.h
 
 FORMS += \
         mainwindow.ui \
