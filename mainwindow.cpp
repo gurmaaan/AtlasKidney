@@ -23,11 +23,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::enableMainWindow(bool authStatus)
 {
-    if(authStatus)
-    {
-        ui->settingsDock->setEnabled(authStatus);
-        ui->label->setEnabled(authStatus);
-    }
+    //NOTE Dima skazal udalit'
+//    if(authStatus)
+//    {
+//        ui->settingsDock->setEnabled(authStatus);
+//        ui->label->setEnabled(authStatus);
+//    }
 }
 
 void MainWindow::connectAll()
