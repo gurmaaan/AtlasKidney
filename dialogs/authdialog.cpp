@@ -2,12 +2,16 @@
 #include "ui_authdialog.h"
 
 
-AuthDialog::AuthDialog(QWidget *parent) :
+AuthDialog::AuthDialog(DB_connector& db, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AuthDialog)
+    ui(new Ui::AuthDialog),
+    db(db)
 {
     ui->setupUi(this);
     setWindowTitle("Авторизация");
+
+    // NOTE
+//    ui->buttonBox->buttons()[0]->click();
 }
 
 AuthDialog::~AuthDialog()
@@ -34,10 +38,10 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
 
         //TODO: Vanya ebash proverku i avtorizaciu zdes
         //
-        if(okOption("Fartu masti", "AUE") && !QDir(QDir::fromNativeSeparators(ui->password_le->text())).exists())
-        {
-            //BUG: какого-то хуя папка не существует при проверке экзистом поставлен воскл знак в качестве костыля
-            qDebug() << "Yes!!!!!";
+
+        qDebug() << ui->path_le->text();
+        if(db.check_login_pass(ui->login_le->text(), ui->password_le->text()) && QDir(ui->path_le->text()).exists() && ui->path_le->text().length() > 0)
+        {            
             emit authStatusChanged(true);
             close();
         }

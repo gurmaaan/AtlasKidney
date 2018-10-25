@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += sql widgets
 
 TARGET = AtlasKidney
 TEMPLATE = app
@@ -27,12 +27,14 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    dialogs/authdialog.cpp
+    dialogs/authdialog.cpp \
+    db_connector.cpp
 
 HEADERS += \
         mainwindow.h \
     dialogs/authdialog.h \
-    static.h
+    static.h \
+    db_connector.h
 
 FORMS += \
         mainwindow.ui \
