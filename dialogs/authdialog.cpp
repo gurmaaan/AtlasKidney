@@ -11,6 +11,9 @@ AuthDialog::AuthDialog(DB_connector& db, QWidget *parent) :
     setWindowTitle("Авторизация");
 
     // NOTE
+    ui->login_le->setText("admin_db");
+    ui->password_le->setText("admin_db_");
+    ui->path_le->setText("C:/Users/Admin/Downloads");
 //    ui->buttonBox->buttons()[0]->click();
 }
 
