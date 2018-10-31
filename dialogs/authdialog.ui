@@ -68,7 +68,7 @@
         <string notr="true">color: black;</string>
        </property>
        <property name="text">
-        <string>admin_db</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -91,7 +91,7 @@
         <string notr="true">color:black;</string>
        </property>
        <property name="text">
-        <string>admin_db_</string>
+        <string/>
        </property>
       </widget>
      </item>

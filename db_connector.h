@@ -28,6 +28,9 @@ public:
     QStringList imagesPaths() const;
     QStringList macroFeatures() const;
 
+    friend QDebug operator<<(QDebug os, const Patient_info& p);
+
+    //operator QString() const { return "<put your QString here>"; }
 private:
     int m_idPatient;
     QString m_historyNum;
@@ -36,6 +39,8 @@ private:
     QStringList m_imagesPaths;
     QStringList m_macroFeatures;
 };
+
+QDebug operator<< (QDebug os, const Patient_info& p);
 
 
 class DB_connector
@@ -46,17 +51,18 @@ public:
         db.setHostName("localhost");
         db.setDatabaseName("admin_db");
         db.setUserName("root");
-        db.setPassword("93660131");
+        db.setPassword("toor");
         isDBCon = db.open();
 
         if(isDBCon)
             qDebug() << "DB conected!!\n";
         else
             qDebug() << "DB not conected!!\n";
+
     }
 
     bool check_login_pass (const QString& login, const QString& pswd) const {
-        QString query = "select  as cnt from USERS_DB where LOGIN='" + login + "' and psw='" + pswd + "'";
+        QString query = "select count(*) as cnt from USERS_DB where LOGIN='" + login + "' and psw='" + pswd + "'";
         qDebug() << query;
         auto ans = db.exec(query);
 
