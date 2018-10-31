@@ -2,9 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtDebug>
+#include <QDebug>
 #include <dialogs/authdialog.h>
-
 #include "db_connector.h"
 
 namespace Ui {

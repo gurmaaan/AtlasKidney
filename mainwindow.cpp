@@ -25,8 +25,7 @@ void MainWindow::enableMainWindow(bool authStatus)
 {
     if(authStatus)
     {
-        ui->settingsDock->setEnabled(authStatus);
-        ui->label->setEnabled(authStatus);
+        qDebug() << "Eneble ,ain window GUI";
     }
 }
 
