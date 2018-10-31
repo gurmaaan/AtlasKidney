@@ -28,15 +28,6 @@ void MainWindow::enableMainWindow(bool authStatus)
     {
         qDebug() << "Eneble ,ain window GUI";
     }
-=======
-    //NOTE Dima skazal udalit'
-//    if(authStatus)
-//    {
-//        ui->settingsDock->setEnabled(authStatus);
-//        ui->label->setEnabled(authStatus);
-//    }
->>>>>>> c0c25c3e0a989563f1aa13ee3c52fea2013acd29
-}
 
 void MainWindow::connectAll()
 {
