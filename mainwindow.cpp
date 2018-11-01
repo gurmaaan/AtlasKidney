@@ -23,12 +23,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::enableMainWindow(bool authStatus)
 {
-<<<<<<< HEAD
     if(authStatus)
     {
         qDebug() << "Eneble ,ain window GUI";
     }
-
+}
 void MainWindow::connectAll()
 {
     connect(authDialog, &AuthDialog::authStatusChanged,
