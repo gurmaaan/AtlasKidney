@@ -12,8 +12,6 @@ MainWindow::MainWindow(QWidget *parent) :
     authDialog->show();
 
     connectAll();
-
-
 }
 
 MainWindow::~MainWindow()

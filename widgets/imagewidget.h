@@ -20,11 +20,14 @@ public:
 
     void setImages(const QVector<QImage> &value);
 
+private slots:
+    void on_fullscreen_toolbtn_clicked();
+
 private:
     Ui::ImageWidget *ui;
     void createPreviewElemnts(int numOfElemnts);
-    QImage frontImage;
-    QVector<QImage> images;
+    QImage frontImage_;
+    QVector<QImage> images_;
 
 };
 
