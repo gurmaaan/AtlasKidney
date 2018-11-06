@@ -33,7 +33,7 @@ void ImageWidget::createPreviewElemnts(int numOfElemnts)
     QFrame::Shadow labelsShadow = fl->frameShadow();
 
     QRect spacerSize = ui->carousel_h_spacer->geometry();
-    QSpacerItem *cSpacer = new QSpacerItem(spacerSize.width(), spacerSize.height());
+    QSpacerItem *cSpacer = new QSpacerItem(spacerSize.width() - (labelsGeometry.width() * numOfElemnts), spacerSize.height());
     cl->removeItem(cl->itemAt(1));
 
     for(int i = 0; i < numOfElemnts - 1; i++)

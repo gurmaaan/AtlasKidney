@@ -28,6 +28,8 @@ private:
     void createPreviewElemnts(int numOfElemnts);
     QImage frontImage_;
     QVector<QImage> images_;
+    QString basePath_;
+
 
 };
 
