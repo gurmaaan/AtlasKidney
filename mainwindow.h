@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QDebug>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QListView>
 #include <dialogs/authdialog.h>
 #include "db_connector.h"
 
@@ -18,7 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void setPatients(const QVector<Patient_info> &patients);
+    void setPatients(const QVector<PatientInfo> &patients);
 
 public slots:
     void enableMainWindow(bool authStatus);
@@ -28,12 +31,16 @@ private slots:
     void on_nextpatient_action_triggered();
     void on_previouspatient_action_triggered();
 
+    void on_lastPatient_action_triggered();
+
+    void on_firstPatient_action_triggered();
+
 private:
     Ui::MainWindow *ui;
     AuthDialog *authDialog;
     void connectAll();
-    DB_connector db_;
-    QVector<Patient_info> patients_;
+    DbConnector db_;
+    QVector<PatientInfo> patients_;
     void changePatient(int patientID);
 };
 

@@ -29,20 +29,26 @@ void MainWindow::enableMainWindow(bool authStatus)
 
 void MainWindow::authAccepted()
 {
-    setPatients(db_.get_all_patients());
+    setPatients(db_.getAllPatients());
 
     ui->id_spin->setMaximum(patients_.size());
     ui->id_spin->setMinimum(0);
 
     int maxAge = 0;
-    for(Patient_info pi : patients_)
+    int maxDateFail = 0;
+    for(PatientInfo pi : patients_)
     {
         if(pi.age() > maxAge)
             maxAge = pi.age();
+        if(pi.dateOfFallIll() > maxDateFail)
+            maxDateFail = pi.dateOfFallIll();
     }
-    qDebug() << maxAge;
+
     ui->age_spin->setMaximum(0);
     ui->age_spin->setMaximum(maxAge);
+
+    ui->failDate_spin->setMinimum(0);
+    ui->failDate_spin->setMaximum(maxDateFail);
 
     changePatient(0);
 }
@@ -56,11 +62,24 @@ void MainWindow::connectAll()
 
 void MainWindow::changePatient(int patientID)
 {
-    ui->medicalHistory_le->setText(patients_.at(patientID).historyNum());
-    ui->age_spin->setValue(patients_.at(patientID).age());
+    PatientInfo pi = patients_.at(patientID);
+    ui->id_spin->setValue(patientID);
+    ui->medicalHistory_le->setText(pi.historyNum());
+    ui->age_spin->setValue(pi.age());
+    ui->failDate_spin->setValue(pi.dateOfFallIll());
+
+    QStringList imgList = pi.imagesPaths();
+    ui->imgList_listView->reset();
+    QStandardItemModel *listModel = new QStandardItemModel();
+    for(QString imgName : imgList)
+    {
+        QStandardItem *listItem = new QStandardItem(imgName);
+        listModel->appendRow(listItem);
+    }
+    ui->imgList_listView->setModel(listModel);
 }
 
-void MainWindow::setPatients(const QVector<Patient_info> &patients)
+void MainWindow::setPatients(const QVector<PatientInfo> &patients)
 {
     patients_ = patients;
 }
@@ -75,4 +94,14 @@ void MainWindow::on_previouspatient_action_triggered()
 {
     ui->id_spin->setValue( ui->id_spin->value() - 1);
     changePatient(ui->id_spin->value());
+}
+
+void MainWindow::on_lastPatient_action_triggered()
+{
+    changePatient(patients_.size()-1);
+}
+
+void MainWindow::on_firstPatient_action_triggered()
+{
+    changePatient(0);
 }

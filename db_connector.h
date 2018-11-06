@@ -4,22 +4,16 @@
 #include <QtSql>
 #include <QDebug>
 
-class Patient_info
+class PatientInfo
 {
 public:
-    Patient_info() {}
-    Patient_info(int idPatient,
+    PatientInfo() {}
+    PatientInfo(int idPatient,
                  QString historyNum,
                  int age,
                  int dateOfFallIll,
                  QStringList imagesPaths,
-                 QStringList macroFeatures) :
-        m_idPatient(idPatient),
-        m_historyNum(historyNum),
-        m_age(age),
-        m_dateOfFallIll(dateOfFallIll),
-        m_imagesPaths(imagesPaths),
-        m_macroFeatures(macroFeatures) {}
+                 QStringList macroFeatures);
 
     int idPatient() const;
     QString historyNum() const;
@@ -28,7 +22,7 @@ public:
     QStringList imagesPaths() const;
     QStringList macroFeatures() const;
 
-    friend QDebug operator<<(QDebug os, const Patient_info& p);
+    friend QDebug operator<<(QDebug os, const PatientInfo& p);
 
     //operator QString() const { return "<put your QString here>"; }
 private:
@@ -40,71 +34,15 @@ private:
     QStringList m_macroFeatures;
 };
 
-QDebug operator<< (QDebug os, const Patient_info& p);
+QDebug operator<< (QDebug os, const PatientInfo& p);
 
 
-class DB_connector
+class DbConnector
 {
 public:
-    DB_connector() {
-        db = QSqlDatabase::addDatabase("QMYSQL");
-        db.setHostName("localhost");
-        db.setDatabaseName("admin_db");
-        db.setUserName("root");
-        db.setPassword("toor");
-        isDBCon = db.open();
-
-        if(isDBCon)
-            qDebug() << "DB conected!!\n";
-        else
-            qDebug() << "DB not conected!!\n";
-
-    }
-
-    bool check_login_pass (const QString& login, const QString& pswd) const {
-        QString query = "select count(*) as cnt from USERS_DB where LOGIN='" + login + "' and psw='" + pswd + "'";
-        qDebug() << query;
-        auto ans = db.exec(query);
-
-        ans.first();
-
-        return ans.value("cnt").toString()=="1" ? true : false;
-    }
-
-    QVector<Patient_info> get_all_patients () const {
-
-        QVector<Patient_info> for_ret;
-
-        QString query = "select ID_PATIENT, HISTORY_NUM, AGE, DATE_OF_FALL_ILL from PATIENT";
-
-        auto ans = db.exec(query);
-
-        while(ans.next()){
-            int idPatient = ans.value(0).toInt();
-            QString historyNum = ans.value(1).toString();
-            int age = ans.value(2).toInt();
-            int dateOfFallIll = ans.value(3).toInt();
-            QStringList imagesPaths;
-            QStringList macroFeatures;
-
-            query = "select UNIQUEFILENAME from IMAGES where ID_PATIENT=" + QString::number(idPatient);
-            auto tmp_ans = db.exec(query);
-
-            while(tmp_ans.next())
-                 imagesPaths.append(tmp_ans.value(0).toString());
-
-            query = "select NAME_MAIN_FEATURE from PATIENT_MACRO_FEATURES p join V_MACRO_MAIN_FEATURES v on p.id_feature = v.ID_MAIN_FEATURE where id_patient=" + QString::number(idPatient);
-            tmp_ans = db.exec(query);
-
-            while(tmp_ans.next())
-                 macroFeatures.append(tmp_ans.value(0).toString());
-
-            for_ret.append(Patient_info(idPatient, historyNum, age, dateOfFallIll, imagesPaths, macroFeatures));
-
-        }
-
-        return for_ret;
-    }
+    DbConnector();
+    bool checkLoginPass (const QString& login, const QString& pswd) const;
+    QVector<PatientInfo> getAllPatients () const;
 
 private:
     QSqlDatabase db;

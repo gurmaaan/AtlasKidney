@@ -23,7 +23,7 @@ class AuthDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AuthDialog(DB_connector& db, QWidget *parent = nullptr);
+    explicit AuthDialog(DbConnector& db, QWidget *parent = nullptr);
     ~AuthDialog();
 
 private slots:
@@ -39,7 +39,7 @@ private:
     bool okOption(QString login, QString password);
     void closeOption();
     void resetOption();
-    DB_connector db;
+    DbConnector db;
 };
 
 #endif // AUTHDIALOG_H

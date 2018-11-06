@@ -4,7 +4,7 @@
 	#define AUTH_MSG_BODY "Проверьте данные пользователя и путь к указанной папке"
     #define GURMAAAN "https://github.com/gurmaaan/AtlasKidney"
 
-    #define IMG_PATH "C:/Users/Admin/Downloads"
+    #define IMG_PATH "C:\Users\Admin\YandexDisk\Загрузки\UIR3\7 Файлы интерфейса и изображения\Debug\Гистология_Почка\TImages"
     #define LOGIN "admin_db"
     #define PASSWORD "admin_db_"
 #endif // STATIC_H

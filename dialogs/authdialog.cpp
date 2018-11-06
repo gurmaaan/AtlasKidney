@@ -2,7 +2,7 @@
 #include "ui_authdialog.h"
 
 
-AuthDialog::AuthDialog(DB_connector& db, QWidget *parent) :
+AuthDialog::AuthDialog(DbConnector& db, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AuthDialog),
     db(db)
@@ -43,7 +43,7 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
         //
 
         qDebug() << ui->path_le->text();
-        if(db.check_login_pass(ui->login_le->text(), ui->password_le->text()) && QDir(ui->path_le->text()).exists() && ui->path_le->text().length() > 0)
+        if(db.checkLoginPass(ui->login_le->text(), ui->password_le->text()) && QDir(ui->path_le->text()).exists() && ui->path_le->text().length() > 0)
         {            
             emit authStatusChanged(true);
             close();

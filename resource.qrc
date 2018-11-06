@@ -59,5 +59,7 @@
         <file>icons/text_type_ic.png</file>
         <file>icons/user_manual_ic.png</file>
         <file>icons/view_groups_objects_ic.png</file>
+        <file>icons/last.png</file>
+        <file>icons/first.png</file>
     </qresource>
 </RCC>

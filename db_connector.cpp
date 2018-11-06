@@ -1,36 +1,44 @@
 #include "db_connector.h"
 
-int Patient_info::idPatient() const
+PatientInfo::PatientInfo(int idPatient, QString historyNum, int age, int dateOfFallIll, QStringList imagesPaths, QStringList macroFeatures) :
+    m_idPatient(idPatient),
+    m_historyNum(historyNum),
+    m_age(age),
+    m_dateOfFallIll(dateOfFallIll),
+    m_imagesPaths(imagesPaths),
+    m_macroFeatures(macroFeatures) {}
+
+int PatientInfo::idPatient() const
 {
     return m_idPatient;
 }
 
-QString Patient_info::historyNum() const
+QString PatientInfo::historyNum() const
 {
     return m_historyNum;
 }
 
-int Patient_info::age() const
+int PatientInfo::age() const
 {
     return m_age;
 }
 
-int Patient_info::dateOfFallIll() const
+int PatientInfo::dateOfFallIll() const
 {
     return m_dateOfFallIll;
 }
 
-QStringList Patient_info::imagesPaths() const
+QStringList PatientInfo::imagesPaths() const
 {
     return m_imagesPaths;
 }
 
-QStringList Patient_info::macroFeatures() const
+QStringList PatientInfo::macroFeatures() const
 {
     return m_macroFeatures;
 }
 
-QDebug operator<<(QDebug os, const Patient_info &p) {
+QDebug operator<<(QDebug os, const PatientInfo &p) {
     os << "idPatient: " << p.m_idPatient <<
     "\n\thistoryNum: " << p.m_historyNum <<
     "\n\tage: " << p.m_age <<
@@ -42,4 +50,64 @@ QDebug operator<<(QDebug os, const Patient_info &p) {
     for(auto i: p.m_macroFeatures)
         os << "\t\t" << i << "\n";
     return os;
+}
+
+DbConnector::DbConnector() {
+    db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("localhost");
+    db.setDatabaseName("admin_db");
+    db.setUserName("root");
+    db.setPassword("toor");
+    isDBCon = db.open();
+
+    if(isDBCon)
+        qDebug() << "DB conected!!\n";
+    else
+        qDebug() << "DB not conected!!\n";
+
+}
+
+bool DbConnector::checkLoginPass(const QString &login, const QString &pswd) const {
+    QString query = "select count(*) as cnt from USERS_DB where LOGIN='" + login + "' and psw='" + pswd + "'";
+    qDebug() << query;
+    auto ans = db.exec(query);
+
+    ans.first();
+
+    return ans.value("cnt").toString()=="1" ? true : false;
+}
+
+QVector<PatientInfo> DbConnector::getAllPatients() const {
+
+    QVector<PatientInfo> for_ret;
+
+    QString query = "select ID_PATIENT, HISTORY_NUM, AGE, DATE_OF_FALL_ILL from PATIENT";
+
+    auto ans = db.exec(query);
+
+    while(ans.next()){
+        int idPatient = ans.value(0).toInt();
+        QString historyNum = ans.value(1).toString();
+        int age = ans.value(2).toInt();
+        int dateOfFallIll = ans.value(3).toInt();
+        QStringList imagesPaths;
+        QStringList macroFeatures;
+
+        query = "select UNIQUEFILENAME from IMAGES where ID_PATIENT=" + QString::number(idPatient);
+        auto tmp_ans = db.exec(query);
+
+        while(tmp_ans.next())
+            imagesPaths.append(tmp_ans.value(0).toString());
+
+        query = "select NAME_MAIN_FEATURE from PATIENT_MACRO_FEATURES p join V_MACRO_MAIN_FEATURES v on p.id_feature = v.ID_MAIN_FEATURE where id_patient=" + QString::number(idPatient);
+        tmp_ans = db.exec(query);
+
+        while(tmp_ans.next())
+            macroFeatures.append(tmp_ans.value(0).toString());
+
+        for_ret.append(PatientInfo(idPatient, historyNum, age, dateOfFallIll, imagesPaths, macroFeatures));
+
+    }
+
+    return for_ret;
 }
