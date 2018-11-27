@@ -58,6 +58,10 @@ void MainWindow::connectAll()
             this, &MainWindow::enableMainWindow);
     connect(authDialog, &AuthDialog::accepted,
             this, &MainWindow::authAccepted);
+    connect(authDialog, &AuthDialog::basePathChanged,
+            ui->img_widget, &ImageWidget::setBasePath);
+    connect(this, &MainWindow::imgNamesListChanged,
+            ui->img_widget, ImageWidget::setImgNames);
 }
 
 void MainWindow::changePatient(int patientID)
@@ -69,6 +73,7 @@ void MainWindow::changePatient(int patientID)
     ui->failDate_spin->setValue(pi.dateOfFallIll());
 
     QStringList imgList = pi.imagesPaths();
+    emit imgNamesListChanged(imgList);
     ui->imgList_listView->reset();
     QStandardItemModel *listModel = new QStandardItemModel();
     for(QString imgName : imgList)

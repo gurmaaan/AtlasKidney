@@ -13,7 +13,7 @@ AuthDialog::AuthDialog(DbConnector& db, QWidget *parent) :
     // NOTE
     ui->login_le->setText(LOGIN);
     ui->password_le->setText(PASSWORD);
-    ui->path_le->setText(IMG_PATH);
+    //ui->path_le->setText(IMG_PATH);
 //    ui->buttonBox->buttons()[0]->click();
 }
 
@@ -28,7 +28,7 @@ void AuthDialog::on_path_btn_clicked()
                                                 QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
                                                 QFileDialog::ShowDirsOnly
                                                 | QFileDialog::DontResolveSymlinks);
-    emit rootPathChanged(dir);
+    emit basePathChanged(dir);
     ui->path_le->setText(dir);
 }
 
@@ -38,11 +38,6 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
     if(button == btnList.at(0))
     {
         // Ok button action
-
-        //TODO: Vanya ebash proverku i avtorizaciu zdes
-        //
-
-        qDebug() << ui->path_le->text();
         if(db.checkLoginPass(ui->login_le->text(), ui->password_le->text()) && QDir(ui->path_le->text()).exists() && ui->path_le->text().length() > 0)
         {            
             emit authStatusChanged(true);
@@ -67,14 +62,12 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
 
 bool AuthDialog::okOption(QString login, QString password)
 {
-    qDebug() << "Ok";
     bool accessGranted = ((ui->login_le->text() == login) && (ui->path_le->text() == password)) ? false : true;
     return accessGranted;
 }
 
 void AuthDialog::closeOption()
 {
-    qDebug() << "Close";
     close();
 }
 
@@ -83,5 +76,4 @@ void AuthDialog::resetOption()
     ui->password_le->clear();
     ui->login_le->clear();
     ui->path_le->clear();
-    qDebug() << "Reset";
 }

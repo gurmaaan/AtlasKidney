@@ -32,7 +32,7 @@ private slots:
 
 signals:
     void authStatusChanged(bool accessGranted);
-    void rootPathChanged(QString pathToFold);
+    void basePathChanged(QString pathToFold);
 
 private:
     Ui::AuthDialog *ui;

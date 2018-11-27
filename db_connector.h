@@ -13,7 +13,8 @@ public:
                  int age,
                  int dateOfFallIll,
                  QStringList imagesPaths,
-                 QStringList macroFeatures);
+                 QStringList macroFeatures,
+                 QChar sex);
 
     int idPatient() const;
     QString historyNum() const;
@@ -32,6 +33,7 @@ private:
     int m_dateOfFallIll;
     QStringList m_imagesPaths;
     QStringList m_macroFeatures;
+    QChar m_sex;
 };
 
 QDebug operator<< (QDebug os, const PatientInfo& p);

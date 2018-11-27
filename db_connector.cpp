@@ -1,12 +1,14 @@
 #include "db_connector.h"
 
-PatientInfo::PatientInfo(int idPatient, QString historyNum, int age, int dateOfFallIll, QStringList imagesPaths, QStringList macroFeatures) :
+PatientInfo::PatientInfo(int idPatient, QString historyNum, int age, int dateOfFallIll, QStringList imagesPaths, QStringList macroFeatures, QChar sex) :
     m_idPatient(idPatient),
     m_historyNum(historyNum),
     m_age(age),
     m_dateOfFallIll(dateOfFallIll),
     m_imagesPaths(imagesPaths),
-    m_macroFeatures(macroFeatures) {}
+    m_macroFeatures(macroFeatures),
+    m_sex(sex)
+{}
 
 int PatientInfo::idPatient() const
 {
@@ -43,6 +45,7 @@ QDebug operator<<(QDebug os, const PatientInfo &p) {
     "\n\thistoryNum: " << p.m_historyNum <<
     "\n\tage: " << p.m_age <<
     "\n\tdateOfFallIll: " << p.m_dateOfFallIll <<
+    "\n\tsex: " << QString(p.m_sex) <<
     "\n\timagesPaths:\n";
     for(auto i: p.m_imagesPaths)
         os << "\t\t" << i << "\n";
@@ -65,6 +68,10 @@ DbConnector::DbConnector() {
     else
         qDebug() << "DB not conected!!\n";
 
+    auto vec = getAllPatients();
+//    for (auto i: vec)
+        qDebug() << vec[0];
+
 }
 
 bool DbConnector::checkLoginPass(const QString &login, const QString &pswd) const {
@@ -81,7 +88,7 @@ QVector<PatientInfo> DbConnector::getAllPatients() const {
 
     QVector<PatientInfo> for_ret;
 
-    QString query = "select ID_PATIENT, HISTORY_NUM, AGE, DATE_OF_FALL_ILL from PATIENT";
+    QString query = "select ID_PATIENT, HISTORY_NUM, AGE, DATE_OF_FALL_ILL, SEX from PATIENT";
 
     auto ans = db.exec(query);
 
@@ -92,6 +99,7 @@ QVector<PatientInfo> DbConnector::getAllPatients() const {
         int dateOfFallIll = ans.value(3).toInt();
         QStringList imagesPaths;
         QStringList macroFeatures;
+        QChar sex = (ans.value(4).toString().size() != 0) ? ans.value(4).toString()[0] : QChar('N');
 
         query = "select UNIQUEFILENAME from IMAGES where ID_PATIENT=" + QString::number(idPatient);
         auto tmp_ans = db.exec(query);
@@ -105,7 +113,7 @@ QVector<PatientInfo> DbConnector::getAllPatients() const {
         while(tmp_ans.next())
             macroFeatures.append(tmp_ans.value(0).toString());
 
-        for_ret.append(PatientInfo(idPatient, historyNum, age, dateOfFallIll, imagesPaths, macroFeatures));
+        for_ret.append(PatientInfo(idPatient, historyNum, age, dateOfFallIll, imagesPaths, macroFeatures, sex));
 
     }
 

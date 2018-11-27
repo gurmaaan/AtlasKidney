@@ -23,6 +23,8 @@ public:
 
     void setPatients(const QVector<PatientInfo> &patients);
 
+signals:
+    void imgNamesListChanged(QStringList &imgNames);
 public slots:
     void enableMainWindow(bool authStatus);
     void authAccepted();
@@ -30,9 +32,7 @@ public slots:
 private slots:
     void on_nextpatient_action_triggered();
     void on_previouspatient_action_triggered();
-
     void on_lastPatient_action_triggered();
-
     void on_firstPatient_action_triggered();
 
 private:

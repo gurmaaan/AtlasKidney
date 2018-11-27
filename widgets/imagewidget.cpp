@@ -15,8 +15,24 @@ ImageWidget::~ImageWidget()
 
 void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes)
 {
-//    qDebug() << "Input list to load function"
     createPreviewElemnts(imagesLocalPathes.size());
+    QList<QObject*> previewElemnts = ui->carousel_h_layout->children();
+    for(int i = 0 ; i < imagesLocalPathes.size(); i++)
+    {
+        QString fullPath = baseAbsolutePath + "/" + imagesLocalPathes.at(i);
+        qDebug() << fullPath;
+        if(fileExists(fullPath))
+        {
+            //QPixmap imgFromList(fullPath);
+            images_.push_back(QPixmap(fullPath));
+        }
+        else
+        {
+            qDebug() << fullPath << "doesn't exist";
+            images_.push_back(createPixmapWithtext(ui->first_label->size(), imagesLocalPathes.at(i)));
+        }
+    }
+    ui->first_label->setPixmap(images_.at(0));
 }
 
 void ImageWidget::createPreviewElemnts(int numOfElemnts)
@@ -34,7 +50,8 @@ void ImageWidget::createPreviewElemnts(int numOfElemnts)
 
     QRect spacerSize = ui->carousel_h_spacer->geometry();
     QSpacerItem *cSpacer = new QSpacerItem(spacerSize.width() - (labelsGeometry.width() * numOfElemnts), spacerSize.height());
-    cl->removeItem(cl->itemAt(1));
+    for(int i = 0 ; i < cl->count(); i++)
+        cl->removeItem(cl->itemAt(i));
 
     for(int i = 0; i < numOfElemnts - 1; i++)
     {
@@ -55,7 +72,39 @@ void ImageWidget::createPreviewElemnts(int numOfElemnts)
     cl->addItem(cSpacer);
 }
 
-void ImageWidget::setImages(const QVector<QImage> &value)
+bool ImageWidget::fileExists(QString path)
+{
+    QFileInfo check_file(path);
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (check_file.exists() && check_file.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+QPixmap ImageWidget::createPixmapWithtext(QSize size, QString text)
+{
+    QPixmap pixmap(size);
+    pixmap.fill( QColor(PREVIEW_COLOR) );
+    QPainter painter( &pixmap );
+    painter.setFont( QFont("Arial") );
+    painter.drawText( QPoint(size.width() / 10, size.height() / 10), text );
+    return pixmap;
+}
+
+void ImageWidget::setImgNames(const QStringList &imgNames)
+{
+    imgNames_ = imgNames;
+    loadImages(basePath_, imgNames_);
+}
+
+void ImageWidget::setBasePath(const QString &basePath)
+{
+    basePath_ = basePath;
+}
+
+void ImageWidget::setImages(const QVector<QPixmap> &value)
 {
     images_ = value;
 }
