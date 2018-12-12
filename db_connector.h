@@ -26,6 +26,8 @@ public:
     friend QDebug operator<<(QDebug os, const PatientInfo& p);
 
     //operator QString() const { return "<put your QString here>"; }
+    QChar sex() const;
+
 private:
     int m_idPatient;
     QString m_historyNum;

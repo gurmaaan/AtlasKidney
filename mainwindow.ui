@@ -77,7 +77,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>254</width>
+     <width>265</width>
      <height>238</height>
     </size>
    </property>
@@ -168,13 +168,50 @@
          <widget class="QLineEdit" name="medicalHistory_le"/>
         </item>
         <item row="2" column="0">
+         <widget class="QLabel" name="sex_label">
+          <property name="text">
+           <string>Пол</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QHBoxLayout" name="sex_h_layout">
+          <item>
+           <widget class="QRadioButton" name="sexM_radio">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>М</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="sexF_radio">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Ж</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
          <widget class="QLabel" name="age_label">
           <property name="text">
            <string>Возраст</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="3" column="1">
          <widget class="QSpinBox" name="age_spin">
           <property name="readOnly">
            <bool>true</bool>
@@ -184,14 +221,14 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="failDate_lbl">
           <property name="text">
            <string>Год заболевания</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="4" column="1">
          <widget class="QSpinBox" name="failDate_spin">
           <property name="readOnly">
            <bool>true</bool>
@@ -246,7 +283,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="imgList_dock">
+  <widget class="QDockWidget" name="microfeatures_dock">
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
@@ -254,15 +291,15 @@
     <set>Qt::BottomDockWidgetArea|Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Список изображений</string>
+    <string>Микропризнаки</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="imgList_dockContent">
+   <widget class="QWidget" name="microfeatures_dockContent">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QListView" name="imgList_listView"/>
+      <widget class="QListView" name="microfeatures_listView"/>
      </item>
     </layout>
    </widget>

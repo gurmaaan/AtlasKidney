@@ -71,17 +71,26 @@ void MainWindow::changePatient(int patientID)
     ui->medicalHistory_le->setText(pi.historyNum());
     ui->age_spin->setValue(pi.age());
     ui->failDate_spin->setValue(pi.dateOfFallIll());
-
+    if(QString(pi.sex()) == "F")
+        ui->sexF_radio->setChecked(true);
+    else if(QString(pi.sex()) == "M")
+        ui->sexM_radio->setChecked(true);
+    else {
+        ui->sexF_radio->setChecked(false);
+        ui->sexM_radio->setChecked(false);
+    }
     QStringList imgList = pi.imagesPaths();
     emit imgNamesListChanged(imgList);
-    ui->imgList_listView->reset();
+
+    ui->microfeatures_listView->reset();
     QStandardItemModel *listModel = new QStandardItemModel();
-    for(QString imgName : imgList)
+    QStringList microFeaturesList = pi.macroFeatures();
+    for(QString feature : microFeaturesList)
     {
-        QStandardItem *listItem = new QStandardItem(imgName);
+        QStandardItem *listItem = new QStandardItem(feature);
         listModel->appendRow(listItem);
     }
-    ui->imgList_listView->setModel(listModel);
+    ui->microfeatures_listView->setModel(listModel);
 }
 
 void MainWindow::setPatients(const QVector<PatientInfo> &patients)

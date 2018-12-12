@@ -6,6 +6,8 @@ ImageWidget::ImageWidget(QWidget *parent) :
     ui(new Ui::ImageWidget)
 {
     ui->setupUi(this);
+    previewModel_ = new QStandardItemModel;
+    ui->preview_table->setModel(previewModel_);
 }
 
 ImageWidget::~ImageWidget()
@@ -15,61 +17,28 @@ ImageWidget::~ImageWidget()
 
 void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes)
 {
-    createPreviewElemnts(imagesLocalPathes.size());
-    QList<QObject*> previewElemnts = ui->carousel_h_layout->children();
-    for(int i = 0 ; i < imagesLocalPathes.size(); i++)
+    previewModel_->clear();
+    QList<QStandardItem*> previewRow;
+    for (int i = 0; i < imagesLocalPathes.size(); i++)
     {
-        QString fullPath = baseAbsolutePath + "/" + imagesLocalPathes.at(i);
-        qDebug() << fullPath;
+        QString imgName = imagesLocalPathes.at(i).toLower();
+        QString fullPath = baseAbsolutePath + "/" + imgName;
+        QStandardItem* item = new QStandardItem();
         if(fileExists(fullPath))
         {
-            //QPixmap imgFromList(fullPath);
-            images_.push_back(QPixmap(fullPath));
+            item->setIcon(QIcon(fullPath));
         }
         else
-        {
-            qDebug() << fullPath << "doesn't exist";
-            images_.push_back(createPixmapWithtext(ui->first_label->size(), imagesLocalPathes.at(i)));
+        {            
+            QString errorMsg = imagesLocalPathes.at(i) + "\n" + "doesn't exist";
+            qDebug() << errorMsg << endl << fullPath << endl;
+            QPixmap nullPixmap = createPixmapWithtext(errorMsg);
+            item->setIcon(QIcon(nullPixmap));
         }
+        previewRow.append(item);
     }
-    ui->first_label->setPixmap(images_.at(0));
-}
-
-void ImageWidget::createPreviewElemnts(int numOfElemnts)
-{
-    QLayout* cl = ui->carousel_h_layout;
-    QLabel* fl = ui->first_label;
-
-    QString labelsStyleStr = fl->styleSheet();
-    QRect labelsGeometry = fl->geometry();
-
-    QRect labelsRect = fl->frameGeometry();
-    int labelsStyle = fl->frameStyle();
-    QFrame::Shape labelsShape = fl->frameShape();
-    QFrame::Shadow labelsShadow = fl->frameShadow();
-
-    QRect spacerSize = ui->carousel_h_spacer->geometry();
-    QSpacerItem *cSpacer = new QSpacerItem(spacerSize.width() - (labelsGeometry.width() * numOfElemnts), spacerSize.height());
-    for(int i = 0 ; i < cl->count(); i++)
-        cl->removeItem(cl->itemAt(i));
-
-    for(int i = 0; i < numOfElemnts - 1; i++)
-    {
-        QLabel *imgLabel = new QLabel();
-        imgLabel->setStyleSheet(labelsStyleStr);
-
-        imgLabel->setFrameRect(labelsRect);
-        imgLabel->setFrameShadow(labelsShadow);
-        imgLabel->setFrameShape(labelsShape);
-        imgLabel->setFrameStyle(labelsStyle);
-
-        imgLabel->setGeometry(labelsGeometry);
-        imgLabel->setMinimumWidth(fl->minimumWidth());
-        imgLabel->setMinimumHeight(fl->minimumHeight());
-        cl->addWidget(imgLabel);
-    }
-
-    cl->addItem(cSpacer);
+    previewModel_->appendRow(previewRow);
+    ui->preview_table->setRowHeight(0,100);
 }
 
 bool ImageWidget::fileExists(QString path)
@@ -83,7 +52,7 @@ bool ImageWidget::fileExists(QString path)
     }
 }
 
-QPixmap ImageWidget::createPixmapWithtext(QSize size, QString text)
+QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
 {
     QPixmap pixmap(size);
     pixmap.fill( QColor(PREVIEW_COLOR) );
@@ -116,5 +85,12 @@ void ImageWidget::setFrontImage(const QImage &value)
 
 void ImageWidget::on_fullscreen_toolbtn_clicked()
 {
-    createPreviewElemnts(5);
+    QDialog *fsDialog = new QDialog();
+    QHBoxLayout *layout = ui->mainPhoto_H_layout;
+
+//    QPixmap pixMap(imgPath);
+//    label->setPixmap(pixMap);
+//    layout->addWidget(label, 0, 0);
+    fsDialog->setLayout(layout);
+    fsDialog->showFullScreen();
 }

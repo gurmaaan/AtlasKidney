@@ -40,9 +40,14 @@ QStringList PatientInfo::macroFeatures() const
     return m_macroFeatures;
 }
 
+QChar PatientInfo::sex() const
+{
+    return m_sex;
+}
+
 QDebug operator<<(QDebug os, const PatientInfo &p) {
     os << "idPatient: " << p.m_idPatient <<
-    "\n\thistoryNum: " << p.m_historyNum <<
+          "\n\thistoryNum: " << p.m_historyNum <<
     "\n\tage: " << p.m_age <<
     "\n\tdateOfFallIll: " << p.m_dateOfFallIll <<
     "\n\tsex: " << QString(p.m_sex) <<
@@ -88,7 +93,7 @@ QVector<PatientInfo> DbConnector::getAllPatients() const {
 
     QVector<PatientInfo> for_ret;
 
-    QString query = "select ID_PATIENT, HISTORY_NUM, AGE, DATE_OF_FALL_ILL, SEX from PATIENT";
+    QString query = "select ID_PATIENT, HISTORY_NUM, AGE, DATE_OF_FALL_ILL, SEX from PATIENT where id_organ=9";
 
     auto ans = db.exec(query);
 

@@ -4,8 +4,12 @@
 #include <QWidget>
 #include <QDebug>
 #include <QFileInfo>
+#include <QStandardItem>
+#include <QGraphicsView>
 #include <QPixmap>
 #include <QLabel>
+#include <QDialog>
+#include <QDesktopWidget>
 #include <static.h>
 
 namespace Ui {
@@ -32,13 +36,14 @@ private slots:
 
 private:
     Ui::ImageWidget *ui;
-    void createPreviewElemnts(int numOfElemnts);
+    QStandardItemModel *previewModel_;
     QImage frontImage_;
     QVector<QPixmap> images_;
     QString basePath_;
     QStringList imgNames_;
+
     bool fileExists(QString path);
-    QPixmap createPixmapWithtext(QSize size, QString text);
+    QPixmap createPixmapWithtext(QString text, QSize size = QSize(100, 100));
 };
 
 #endif // IMAGEWIDGET_H
