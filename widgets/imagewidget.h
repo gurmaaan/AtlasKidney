@@ -5,7 +5,9 @@
 #include <QDebug>
 #include <QFileInfo>
 #include <QStandardItem>
-#include <QGraphicsView>
+#include <QStandardItemModel>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QLabel>
 #include <QDialog>
@@ -24,7 +26,7 @@ public:
     explicit ImageWidget(QWidget *parent = nullptr);
     ~ImageWidget();
     void loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes);
-    void setFrontImage(const QImage &value);
+    void setFrontImage(const QPixmap &value);
     void setImages(const QVector<QPixmap> &value);
 
 public slots:
@@ -34,14 +36,16 @@ public slots:
 private slots:
     void on_fullscreen_toolbtn_clicked();
 
+    void on_preview_table_clicked(const QModelIndex &index);
+
 private:
     Ui::ImageWidget *ui;
     QStandardItemModel *previewModel_;
-    QImage frontImage_;
+    QPixmap frontImage_;
     QVector<QPixmap> images_;
     QString basePath_;
     QStringList imgNames_;
-
+    QGraphicsScene *scene_;
     bool fileExists(QString path);
     QPixmap createPixmapWithtext(QString text, QSize size = QSize(100, 100));
 };
