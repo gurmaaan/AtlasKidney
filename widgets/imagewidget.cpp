@@ -8,6 +8,7 @@ ImageWidget::ImageWidget(QWidget *parent) :
     ui->setupUi(this);
     previewModel_ = new QStandardItemModel;
     scene_ = new QGraphicsScene;
+    k_ = 0;
 
     ui->preview_table->setModel(previewModel_);
     ui->main_photo_gv->setScene(scene_);
@@ -21,7 +22,6 @@ ImageWidget::~ImageWidget()
 void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes)
 {
     previewModel_->clear();
-    scene_->clear();
     QList<QStandardItem*> previewRow;
     QVector<QPixmap> imgVector;
     for (int i = 0; i < imagesLocalPathes.size(); i++)
@@ -46,9 +46,7 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
     }
 
     setImages(imgVector);
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(imgVector.at(0));
-    scene_->addItem(item);
-    ui->main_photo_gv->show();
+    setFrontImage(imgVector.at(0));
 
     previewModel_->appendRow(previewRow);
     ui->preview_table->setRowHeight(0,100);
@@ -64,6 +62,26 @@ bool ImageWidget::fileExists(QString path)
     } else {
         return false;
     }
+}
+
+QSize ImageWidget::scaledSize(int k)
+{
+    double H0 = static_cast<double>(frontImage_.height());
+    double W0 = static_cast<double>(frontImage_.width());
+    double dk = static_cast<double>(k) / static_cast<double>(100);
+
+    int W = static_cast<int>(W0 + W0*dk);
+    int H = static_cast<int>(H0 + H0*dk);
+
+    qDebug() << "------------" << endl <<
+                "H0 :" << H0 << endl <<
+                "W0 :" << W0 << endl <<
+                "k :" << k << endl <<
+                "dk :" << dk << endl <<
+                "H :" << H << endl <<
+                "W :" << W << endl <<
+                "----------------";
+    return QSize(W, H);
 }
 
 QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
@@ -82,6 +100,16 @@ void ImageWidget::setImgNames(const QStringList &imgNames)
     loadImages(basePath_, imgNames_);
 }
 
+void ImageWidget::scaleImage(int k)
+{
+    scene_->clear();
+    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(frontImage_.scaled(scaledSize(k), Qt::KeepAspectRatio));
+    scene_->addItem(item);
+
+    ui->main_photo_gv->show();
+    ui->main_photo_gv->mapToScene(ui->main_photo_gv->rect().center() );
+}
+
 void ImageWidget::setBasePath(const QString &basePath)
 {
     basePath_ = basePath;
@@ -96,10 +124,7 @@ void ImageWidget::setFrontImage(const QPixmap &value)
 {
     frontImage_ = value;
 
-    scene_->clear();
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(value);
-    scene_->addItem(item);
-    ui->main_photo_gv->show();
+    scaleImage(0);
 }
 
 void ImageWidget::on_fullscreen_toolbtn_clicked()
@@ -117,4 +142,26 @@ void ImageWidget::on_fullscreen_toolbtn_clicked()
 void ImageWidget::on_preview_table_clicked(const QModelIndex &index)
 {
     setFrontImage(images_.at(index.column()));
+}
+
+void ImageWidget::on_plus_toolbtn_clicked()
+{
+    k_+=5;
+    scaleImage(k_);
+    ui->zoom_v_slider->setValue(k_);
+}
+
+void ImageWidget::on_minus_toolbtn_clicked()
+{
+    k_-=5;
+    scaleImage(k_);
+    ui->zoom_v_slider->setValue(k_);
+}
+
+void ImageWidget::on_zoom_v_slider_sliderMoved(int position)
+{
+    k_ = position;
+    scaleImage(k_);
+//    k_=position;
+//    scaleImage(k_);
 }

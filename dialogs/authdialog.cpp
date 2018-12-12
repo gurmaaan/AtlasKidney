@@ -13,8 +13,6 @@ AuthDialog::AuthDialog(DbConnector& db, QWidget *parent) :
     // NOTE
     ui->login_le->setText(LOGIN);
     ui->password_le->setText(PASSWORD);
-    //ui->path_le->setText(IMG_PATH);
-//    ui->buttonBox->buttons()[0]->click();
 }
 
 AuthDialog::~AuthDialog()

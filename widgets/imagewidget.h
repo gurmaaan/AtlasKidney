@@ -32,11 +32,14 @@ public:
 public slots:
     void setBasePath(const QString &basePath);
     void setImgNames(const QStringList &imgNames);
+    void scaleImage(int k);
 
 private slots:
     void on_fullscreen_toolbtn_clicked();
-
     void on_preview_table_clicked(const QModelIndex &index);
+    void on_plus_toolbtn_clicked();
+    void on_minus_toolbtn_clicked();
+    void on_zoom_v_slider_sliderMoved(int position);
 
 private:
     Ui::ImageWidget *ui;
@@ -46,7 +49,10 @@ private:
     QString basePath_;
     QStringList imgNames_;
     QGraphicsScene *scene_;
+    int k_;
+
     bool fileExists(QString path);
+    QSize scaledSize(int k);
     QPixmap createPixmapWithtext(QString text, QSize size = QSize(100, 100));
 };
 
