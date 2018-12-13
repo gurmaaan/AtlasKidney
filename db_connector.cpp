@@ -52,8 +52,11 @@ DbConnector::DbConnector() {
 
     auto vec = getAllPatients();
 
-    qDebug() << vec[0];
-
+    if(vec.count() > 0)
+    {
+//    for (auto i: vec)
+        qDebug() << vec[0];
+    }
 }
 
 bool DbConnector::checkLoginPass(const QString &login, const QString &pswd) const {

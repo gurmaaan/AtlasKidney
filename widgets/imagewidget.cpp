@@ -8,6 +8,8 @@ ImageWidget::ImageWidget(QWidget *parent) :
     ui->setupUi(this);
     previewModel_ = new QStandardItemModel;
     scene_ = new QGraphicsScene;
+    CSVService csvService;
+    imgGraphicsObjects_ = csvService.readCSVFile(CSVFILE);
     k_ = 0;
 
     ui->preview_table->setModel(previewModel_);
@@ -27,9 +29,9 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
     QVector<QPixmap> imgVector;
     for (int i = 0; i < imagesLocalPathes.size(); i++)
     {
-        QString fullPath = baseAbsolutePath + "/" + imagesLocalPathes.at(i);
+        QString imgName = imagesLocalPathes.at(i);
+        QString fullPath = baseAbsolutePath + "/" + imgName;
         QPixmap pixMapAtI(fullPath);
-        //QImage imgAtI(fullPath);
         imgVector.push_back(pixMapAtI);
         QStandardItem* item = new QStandardItem();
         if(fileExists(fullPath))
@@ -44,7 +46,9 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
             item->setIcon(QIcon(nullPixmap));
         }
         previewRow.append(item);
-        QStandardItem* nameItem = new QStandardItem(imagesLocalPathes.at(i));
+        QStandardItem* nameItem = new QStandardItem(imgName);
+        nameItem->setStatusTip(imgName);
+        nameItem->setWhatsThis(imgName);
         imgNameRow.append(nameItem);
     }
 
@@ -97,7 +101,7 @@ void ImageWidget::setImgNames(const QStringList &imgNames) {
 
 void ImageWidget::drawSigns(bool status)
 {
-    qDebug() << status;
+
 }
 
 void ImageWidget::scaleImage(int k)
@@ -134,7 +138,8 @@ void ImageWidget::on_fullscreen_toolbtn_clicked()
     QLabel *label = new QLabel;
 
     QPixmap activePm;
-    int index = ui->preview_table->selectionModel()->selectedColumns(0).at(0).column();
+    int index = ui->preview_table->selectionModel()->selectedIndexes().at(0).column();
+    qDebug() << "Selected column " << index;
     if(index >= 0)
         activePm = images_.at(index);
     else
