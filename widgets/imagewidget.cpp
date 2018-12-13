@@ -8,6 +8,8 @@ ImageWidget::ImageWidget(QWidget *parent) :
     ui->setupUi(this);
     previewModel_ = new QStandardItemModel;
     scene_ = new QGraphicsScene;
+    CSVService csvService;
+    imgGraphicsObjects_ = csvService.readCSVFile(CSVFILE);
     k_ = 0;
 
     ui->preview_table->setModel(previewModel_);
@@ -29,7 +31,6 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
     {
         QString fullPath = baseAbsolutePath + "/" + imagesLocalPathes.at(i);
         QPixmap pixMapAtI(fullPath);
-        //QImage imgAtI(fullPath);
         imgVector.push_back(pixMapAtI);
         QStandardItem* item = new QStandardItem();
         if(fileExists(fullPath))
@@ -98,7 +99,7 @@ void ImageWidget::setImgNames(const QStringList &imgNames)
 
 void ImageWidget::drawSigns(bool status)
 {
-    qDebug() << status;
+
 }
 
 void ImageWidget::scaleImage(int k)

@@ -31,27 +31,29 @@ void MainWindow::enableMainWindow(bool authStatus)
 void MainWindow::authAccepted()
 {
     setPatients(db_.getAllPatients());
-
-    ui->id_spin->setMaximum(patients_.size());
-    ui->id_spin->setMinimum(0);
-
-    int maxAge = 0;
-    int maxDateFail = 0;
-    for(PatientInfo pi : patients_)
+    if(patients_.count() > 0)
     {
-        if(pi.age() > maxAge)
-            maxAge = pi.age();
-        if(pi.dateOfFallIll() > maxDateFail)
-            maxDateFail = pi.dateOfFallIll();
+        ui->id_spin->setMaximum(patients_.size());
+        ui->id_spin->setMinimum(0);
+
+        int maxAge = 0;
+        int maxDateFail = 0;
+        for(PatientInfo pi : patients_)
+        {
+            if(pi.age() > maxAge)
+                maxAge = pi.age();
+            if(pi.dateOfFallIll() > maxDateFail)
+                maxDateFail = pi.dateOfFallIll();
+        }
+
+        ui->age_spin->setMaximum(0);
+        ui->age_spin->setMaximum(maxAge);
+
+        ui->failDate_spin->setMinimum(0);
+        ui->failDate_spin->setMaximum(maxDateFail);
+
+        changePatient(0);
     }
-
-    ui->age_spin->setMaximum(0);
-    ui->age_spin->setMaximum(maxAge);
-
-    ui->failDate_spin->setMinimum(0);
-    ui->failDate_spin->setMaximum(maxDateFail);
-
-    changePatient(0);
 }
 void MainWindow::connectAll()
 {
@@ -62,38 +64,41 @@ void MainWindow::connectAll()
     connect(authDialog, &AuthDialog::basePathChanged,
             ui->img_widget, &ImageWidget::setBasePath);
     connect(this, &MainWindow::imgNamesListChanged,
-            ui->img_widget, ImageWidget::setImgNames);
+            ui->img_widget, &ImageWidget::setImgNames);
     connect(ui->enableFeaturesSigns_action, &QAction::toggled,
             ui->img_widget, &ImageWidget::drawSigns);
 }
 
 void MainWindow::changePatient(int patientID)
 {
-    PatientInfo pi = patients_.at(patientID);
-    ui->id_spin->setValue(patientID);
-    ui->medicalHistory_le->setText(pi.historyNum());
-    ui->age_spin->setValue(pi.age());
-    ui->failDate_spin->setValue(pi.dateOfFallIll());
-    if(QString(pi.sex()) == "F")
-        ui->sexF_radio->setChecked(true);
-    else if(QString(pi.sex()) == "M")
-        ui->sexM_radio->setChecked(true);
-    else {
-        ui->sexF_radio->setChecked(false);
-        ui->sexM_radio->setChecked(false);
-    }
-    QStringList imgList = pi.imagesPaths();
-    emit imgNamesListChanged(imgList);
-
-    ui->microfeatures_listView->reset();
-    QStandardItemModel *listModel = new QStandardItemModel();
-    QStringList microFeaturesList = pi.macroFeatures();
-    for(QString feature : microFeaturesList)
+    if(patients_.count() > 0)
     {
-        QStandardItem *listItem = new QStandardItem(feature);
-        listModel->appendRow(listItem);
+        PatientInfo pi = patients_.at(patientID);
+        ui->id_spin->setValue(patientID);
+        ui->medicalHistory_le->setText(pi.historyNum());
+        ui->age_spin->setValue(pi.age());
+        ui->failDate_spin->setValue(pi.dateOfFallIll());
+        if(QString(pi.sex()) == "F")
+            ui->sexF_radio->setChecked(true);
+        else if(QString(pi.sex()) == "M")
+            ui->sexM_radio->setChecked(true);
+        else {
+            ui->sexF_radio->setChecked(false);
+            ui->sexM_radio->setChecked(false);
+        }
+        QStringList imgList = pi.imagesPaths();
+        emit imgNamesListChanged(imgList);
+
+        ui->microfeatures_listView->reset();
+        QStandardItemModel *listModel = new QStandardItemModel();
+        QStringList microFeaturesList = pi.macroFeatures();
+        for(QString feature : microFeaturesList)
+        {
+            QStandardItem *listItem = new QStandardItem(feature);
+            listModel->appendRow(listItem);
+        }
+        ui->microfeatures_listView->setModel(listModel);
     }
-    ui->microfeatures_listView->setModel(listModel);
 }
 
 void MainWindow::setPatients(const QVector<PatientInfo> &patients)

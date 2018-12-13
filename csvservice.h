@@ -3,17 +3,33 @@
 
 #include <QString>
 #include <QPoint>
+#include <QFile>
 #include <QObject>
-#include <QGraphicsEllipseItem>
+#include <QGraphicsItem>
+
+enum class Sign
+{
+    Arrow,
+    Ellipse,
+    Square
+};
 
 class ImgGraphicsObject
 {
 public:
-    ImgGraphicsObject() {}
+    ImgGraphicsObject();
+    ImgGraphicsObject(QString imgName, int microFeatureNum, Sign type, QPoint startPoint, QPoint endPoint);
+    QGraphicsItem *graphicsItem() const;
+
 private:
-    QString imgName;
-    QPoint startPoint;
-    QPoint endPoint;
+    QString imgName_;
+    int microFeatureNum_;
+    Sign type_;
+    QPoint startPoint_;
+    QPoint endPoint_;
+    QGraphicsItem *graphicsItem_;
+    QGraphicsItem *genGraphicsItem();
+
 };
 
 class CSVService : public QObject
@@ -22,11 +38,15 @@ class CSVService : public QObject
 public:
     explicit CSVService(QObject *parent = nullptr);
 
+    QVector<ImgGraphicsObject> readCSVFile(QString path) const;
+    void setGraphicsObjects(const QVector<ImgGraphicsObject> &graphicsObjects);
+
 signals:
 
 public slots:
 
 private:
+    QVector<ImgGraphicsObject> graphicsObjects_;
 
 };
 

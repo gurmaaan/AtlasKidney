@@ -74,8 +74,11 @@ DbConnector::DbConnector() {
         qDebug() << "DB not conected!!\n";
 
     auto vec = getAllPatients();
+    if(vec.count() > 0)
+    {
 //    for (auto i: vec)
         qDebug() << vec[0];
+    }
 
 }
 

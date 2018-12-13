@@ -30,7 +30,7 @@ SOURCES += \
         db_connector.cpp \
         dialogs/authdialog.cpp \
         widgets/imagewidget.cpp \ 
-    csvservice.cpp
+        csvservice.cpp
 
 HEADERS += \
         dialogs/mainwindow.h \
@@ -47,7 +47,7 @@ HEADERS += \
         dialogs/authdialog.h
 
 FORMS += \
-        mainwindow.ui \
+        dialogs/mainwindow.ui \
         dialogs/authdialog.ui \
         widgets/imagewidget.ui
 

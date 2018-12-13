@@ -14,6 +14,7 @@
 #include <QDesktopWidget>
 
 #include <static.h>
+#include <csvservice.h>
 
 namespace Ui {
 class ImageWidget;
@@ -52,6 +53,7 @@ private:
     QStringList imgNames_;
     QGraphicsScene *scene_;
     int k_;
+    QVector<ImgGraphicsObject> imgGraphicsObjects_;
 
     bool fileExists(QString path);
     QSize scaledSize(int k);

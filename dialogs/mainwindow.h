@@ -9,6 +9,7 @@
 #include <QDesktopServices>
 
 #include <dialogs/authdialog.h>
+#include <widgets/imagewidget.h>
 #include <static.h>
 #include "db_connector.h"
 
