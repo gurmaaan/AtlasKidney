@@ -90,8 +90,7 @@ QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
     return pixmap;
 }
 
-void ImageWidget::setImgNames(const QStringList &imgNames)
-{
+void ImageWidget::setImgNames(const QStringList &imgNames) {
     imgNames_ = imgNames;
     loadImages(basePath_, imgNames_);
 }

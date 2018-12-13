@@ -6,6 +6,13 @@
 #include <QObject>
 #include <QGraphicsEllipseItem>
 
+enum class SignType
+{
+    Arrow,
+    Square,
+    Ellipse
+};
+
 class ImgGraphicsObject
 {
 public:

@@ -1,49 +1,26 @@
 #include "db_connector.h"
 
-PatientInfo::PatientInfo(int idPatient, QString historyNum, int age, int dateOfFallIll, QStringList imagesPaths, QStringList macroFeatures, QChar sex) :
+int                PatientInfo::idPatient()     const { return m_idPatient;     }
+int                PatientInfo::age()           const { return m_age;           }
+int                PatientInfo::dateOfFallIll() const { return m_dateOfFallIll; }
+QChar              PatientInfo::sex()           const { return m_sex;           }
+QString            PatientInfo::historyNum()    const { return m_historyNum;    }
+QVector<ImageInfo> PatientInfo::images()        const { return m_images;        }
+
+QString     ImageInfo::path()            const { return m_path;          }
+QStringList ImageInfo::main_feat()       const { return m_main_feat;     }
+QStringList ImageInfo::sub_feat()        const { return m_sub_feat;      }
+
+PatientInfo::PatientInfo(int idPatient, QString historyNum, int age, int dateOfFallIll, QVector<ImageInfo> images, QChar sex) :
     m_idPatient(idPatient),
     m_historyNum(historyNum),
     m_age(age),
     m_dateOfFallIll(dateOfFallIll),
-    m_imagesPaths(imagesPaths),
-    m_macroFeatures(macroFeatures),
+    m_images(images),
     m_sex(sex)
 {}
 
-int PatientInfo::idPatient() const
-{
-    return m_idPatient;
-}
 
-QString PatientInfo::historyNum() const
-{
-    return m_historyNum;
-}
-
-int PatientInfo::age() const
-{
-    return m_age;
-}
-
-int PatientInfo::dateOfFallIll() const
-{
-    return m_dateOfFallIll;
-}
-
-QStringList PatientInfo::imagesPaths() const
-{
-    return m_imagesPaths;
-}
-
-QStringList PatientInfo::macroFeatures() const
-{
-    return m_macroFeatures;
-}
-
-QChar PatientInfo::sex() const
-{
-    return m_sex;
-}
 
 QDebug operator<<(QDebug os, const PatientInfo &p) {
     os << "idPatient: " << p.m_idPatient <<
@@ -52,11 +29,11 @@ QDebug operator<<(QDebug os, const PatientInfo &p) {
     "\n\tdateOfFallIll: " << p.m_dateOfFallIll <<
     "\n\tsex: " << QString(p.m_sex) <<
     "\n\timagesPaths:\n";
-    for(auto i: p.m_imagesPaths)
-        os << "\t\t" << i << "\n";
-    os << "\n\tmacroFeatures:\n";
-    for(auto i: p.m_macroFeatures)
-        os << "\t\t" << i << "\n";
+//    for(auto i: p.m_imagesPaths)
+//        os << "\t\t" << i << "\n";
+//    os << "\n\tmacroFeatures:\n";
+//    for(auto i: p.m_macroFeatures)
+//        os << "\t\t" << i << "\n";
     return os;
 }
 
@@ -74,8 +51,8 @@ DbConnector::DbConnector() {
         qDebug() << "DB not conected!!\n";
 
     auto vec = getAllPatients();
-//    for (auto i: vec)
-        qDebug() << vec[0];
+
+    qDebug() << vec[0];
 
 }
 
@@ -102,26 +79,36 @@ QVector<PatientInfo> DbConnector::getAllPatients() const {
         QString historyNum = ans.value(1).toString();
         int age = ans.value(2).toInt();
         int dateOfFallIll = ans.value(3).toInt();
-        QStringList imagesPaths;
-        QStringList macroFeatures;
+        QVector<ImageInfo> images;
         QChar sex = (ans.value(4).toString().size() != 0) ? ans.value(4).toString()[0] : QChar('N');
 
         query = "select UNIQUEFILENAME from IMAGES where ID_PATIENT=" + QString::number(idPatient);
         auto tmp_ans = db.exec(query);
 
         while(tmp_ans.next())
-            imagesPaths.append(tmp_ans.value(0).toString());
+            images.append(tmp_ans.value(0).toString());
 
         //TODO:: Переделать под микропризнаки с макропризнаков!!!!!!!!!!
-        query = "select NAME_MAIN_FEATURE from PATIENT_MACRO_FEATURES p join V_MACRO_MAIN_FEATURES v on p.id_feature = v.ID_MAIN_FEATURE where id_patient=" + QString::number(idPatient);
-        tmp_ans = db.exec(query);
+        query = "select     NAME_MAIN_FEATURE, \
+                            NAME_SUB_FEATURE \
+                from images i \
+                    join images_micro_features       imf  on imf.ID_IMAGE          = i.ID_IMAGE \
+                    join v_micro_features            vmf  on vmf.ID_FEATURE        = imf.ID_FEATURE \
+                    join v_micro_main_features       vmmf on vmmf.ID_MAIN_FEATURE  = vmf.ID_MAIN_FEATURE \
+                    join v_micro_sub_features        vmsf on vmsf.ID_SUB_FEATURE   = vmf.ID_SUB_FEATURE \
+                where i.ID_PATIENT=" + QString::number(idPatient);
+//        tmp_ans = db.exec(query);
 
-        while(tmp_ans.next())
-            macroFeatures.append(tmp_ans.value(0).toString());
+//        while(tmp_ans.next())
+//            qDebug() << "11 " << tmp_ans.value(0).toString() << ": " << tmp_ans.value(1).toString();
 
-        for_ret.append(PatientInfo(idPatient, historyNum, age, dateOfFallIll, imagesPaths, macroFeatures, sex));
+//        exit(1);
+//            macroFeatures.append(tmp_ans.value(0).toString());
+
+        for_ret.append(PatientInfo(idPatient, historyNum, age, dateOfFallIll, images, sex));
 
     }
 
     return for_ret;
 }
+

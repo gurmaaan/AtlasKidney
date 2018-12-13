@@ -24,7 +24,7 @@ void MainWindow::enableMainWindow(bool authStatus)
     if(authStatus)
     {
         //TODO: либо убрать этот метод либо сделать энейбл/дисейбл гуй
-        qDebug() << "Eneble ,main window GUI";
+        qDebug() << "Enable ,main window GUI";
     }
 }
 
@@ -82,18 +82,22 @@ void MainWindow::changePatient(int patientID)
         ui->sexF_radio->setChecked(false);
         ui->sexM_radio->setChecked(false);
     }
-    QStringList imgList = pi.imagesPaths();
+    QVector<ImageInfo> images = pi.images();
+    QStringList imgList;
+    for (ImageInfo i: images)
+        imgList.push_back(i.path());
+
     emit imgNamesListChanged(imgList);
 
     ui->microfeatures_listView->reset();
-    QStandardItemModel *listModel = new QStandardItemModel();
-    QStringList microFeaturesList = pi.macroFeatures();
-    for(QString feature : microFeaturesList)
-    {
-        QStandardItem *listItem = new QStandardItem(feature);
-        listModel->appendRow(listItem);
-    }
-    ui->microfeatures_listView->setModel(listModel);
+//    QStandardItemModel *listModel = new QStandardItemModel();
+//    QStringList microFeaturesList = pi.macroFeatures();
+//    for(QString feature : microFeaturesList)
+//    {
+//        QStandardItem *listItem = new QStandardItem(feature);
+//        listModel->appendRow(listItem);
+//    }
+//    ui->microfeatures_listView->setModel(listModel);
 }
 
 void MainWindow::setPatients(const QVector<PatientInfo> &patients)
