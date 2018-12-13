@@ -112,6 +112,7 @@ QVector<PatientInfo> DbConnector::getAllPatients() const {
         while(tmp_ans.next())
             imagesPaths.append(tmp_ans.value(0).toString());
 
+        //TODO:: Переделать под микропризнаки с макропризнаков!!!!!!!!!!
         query = "select NAME_MAIN_FEATURE from PATIENT_MACRO_FEATURES p join V_MACRO_MAIN_FEATURES v on p.id_feature = v.ID_MAIN_FEATURE where id_patient=" + QString::number(idPatient);
         tmp_ans = db.exec(query);
 

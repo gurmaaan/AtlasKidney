@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QDialog>
 #include <QDesktopWidget>
+
 #include <static.h>
 
 namespace Ui {
@@ -28,17 +29,18 @@ public:
     void loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes);
     void setFrontImage(const QPixmap &value);
     void setImages(const QVector<QPixmap> &value);
+    void scaleImage(int k);
 
 public slots:
     void setBasePath(const QString &basePath);
     void setImgNames(const QStringList &imgNames);
-    void scaleImage(int k);
-
-private slots:
-    void on_fullscreen_toolbtn_clicked();
-    void on_preview_table_clicked(const QModelIndex &index);
+    void drawSigns(bool status);
     void on_plus_toolbtn_clicked();
     void on_minus_toolbtn_clicked();
+    void on_fullscreen_toolbtn_clicked();
+
+private slots:
+    void on_preview_table_clicked(const QModelIndex &index);
     void on_zoom_v_slider_sliderMoved(int position);
 
 private:

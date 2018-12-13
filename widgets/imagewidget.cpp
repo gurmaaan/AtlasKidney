@@ -23,6 +23,7 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
 {
     previewModel_->clear();
     QList<QStandardItem*> previewRow;
+    QList<QStandardItem*> imgNameRow;
     QVector<QPixmap> imgVector;
     for (int i = 0; i < imagesLocalPathes.size(); i++)
     {
@@ -43,12 +44,15 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
             item->setIcon(QIcon(nullPixmap));
         }
         previewRow.append(item);
+        QStandardItem* nameItem = new QStandardItem(imagesLocalPathes.at(i));
+        imgNameRow.append(nameItem);
     }
 
     setImages(imgVector);
     setFrontImage(imgVector.at(0));
 
     previewModel_->appendRow(previewRow);
+    previewModel_->appendRow(imgNameRow);
     ui->preview_table->setRowHeight(0,100);
     ui->preview_table->setCurrentIndex( ui->preview_table->model()->index(0,0));
 }
@@ -73,14 +77,6 @@ QSize ImageWidget::scaledSize(int k)
     int W = static_cast<int>(W0 + W0*dk);
     int H = static_cast<int>(H0 + H0*dk);
 
-    qDebug() << "------------" << endl <<
-                "H0 :" << H0 << endl <<
-                "W0 :" << W0 << endl <<
-                "k :" << k << endl <<
-                "dk :" << dk << endl <<
-                "H :" << H << endl <<
-                "W :" << W << endl <<
-                "----------------";
     return QSize(W, H);
 }
 
@@ -98,6 +94,11 @@ void ImageWidget::setImgNames(const QStringList &imgNames)
 {
     imgNames_ = imgNames;
     loadImages(basePath_, imgNames_);
+}
+
+void ImageWidget::drawSigns(bool status)
+{
+    qDebug() << status;
 }
 
 void ImageWidget::scaleImage(int k)
@@ -132,7 +133,14 @@ void ImageWidget::on_fullscreen_toolbtn_clicked()
     QDialog *fsDialog = new QDialog;
     QVBoxLayout *layout = new QVBoxLayout;
     QLabel *label = new QLabel;
-    QPixmap activePm = images_.at(ui->preview_table->selectionModel()->selectedColumns(0).at(0).column());
+
+    QPixmap activePm;
+    int index = ui->preview_table->selectionModel()->selectedColumns(0).at(0).column();
+    if(index >= 0)
+        activePm = images_.at(index);
+    else
+        activePm = images_.at(0);
+
     label->setPixmap(activePm.scaled( QApplication::desktop()->screenGeometry().size()));
     layout->addWidget(label);
     fsDialog->setLayout(layout);
@@ -162,6 +170,4 @@ void ImageWidget::on_zoom_v_slider_sliderMoved(int position)
 {
     k_ = position;
     scaleImage(k_);
-//    k_=position;
-//    scaleImage(k_);
 }

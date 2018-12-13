@@ -26,20 +26,22 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
+        dialogs/mainwindow.cpp \
         db_connector.cpp \
         dialogs/authdialog.cpp \
-        widgets/imagewidget.cpp 
+        widgets/imagewidget.cpp \ 
+    csvservice.cpp
 
 HEADERS += \
-        mainwindow.h \
+        dialogs/mainwindow.h \
         static.h \
         dialogs/authdialog.h \
-        widgets/imagewidget.h
+        widgets/imagewidget.h \
+    csvservice.h
 
 
 HEADERS += \
-        mainwindow.h \
+        dialogs/mainwindow.h \
         static.h \
         db_connector.h \
         dialogs/authdialog.h

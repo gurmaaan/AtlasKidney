@@ -23,6 +23,7 @@ void MainWindow::enableMainWindow(bool authStatus)
 {
     if(authStatus)
     {
+        //TODO: либо убрать этот метод либо сделать энейбл/дисейбл гуй
         qDebug() << "Eneble ,main window GUI";
     }
 }
@@ -62,6 +63,8 @@ void MainWindow::connectAll()
             ui->img_widget, &ImageWidget::setBasePath);
     connect(this, &MainWindow::imgNamesListChanged,
             ui->img_widget, ImageWidget::setImgNames);
+    connect(ui->enableFeaturesSigns_action, &QAction::toggled,
+            ui->img_widget, &ImageWidget::drawSigns);
 }
 
 void MainWindow::changePatient(int patientID)
@@ -118,4 +121,45 @@ void MainWindow::on_lastPatient_action_triggered()
 void MainWindow::on_firstPatient_action_triggered()
 {
     changePatient(0);
+}
+
+void MainWindow::on_quit_action_triggered()
+{
+    QApplication::quit();
+}
+
+void MainWindow::on_github_action_triggered()
+{
+    QString link(GURMAAAN);
+    QDesktopServices::openUrl(QUrl(link));
+}
+
+void MainWindow::on_fullscreen_action_triggered()
+{
+    ui->img_widget->on_fullscreen_toolbtn_clicked();
+}
+
+void MainWindow::on_disconnect_action_triggered()
+{
+    //TODO
+}
+
+void MainWindow::on_devmanual_action_triggered()
+{
+    //TODO open pdf with guide
+}
+
+void MainWindow::on_zoom_out_action_triggered()
+{
+    ui->img_widget->on_minus_toolbtn_clicked();
+}
+
+void MainWindow::on_zoom_in_action_triggered()
+{
+    ui->img_widget->on_plus_toolbtn_clicked();
+}
+
+void MainWindow::on_usermanual_action_triggered()
+{
+   //TODO open pdf with manual
 }

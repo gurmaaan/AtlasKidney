@@ -57,6 +57,8 @@
     <addaction name="zoom_out_action"/>
     <addaction name="zoom_in_action"/>
     <addaction name="fullscreen_action"/>
+    <addaction name="separator"/>
+    <addaction name="enableFeaturesSigns_action"/>
    </widget>
    <widget class="QMenu" name="info_menu">
     <property name="title">
@@ -301,6 +303,13 @@
      <item>
       <widget class="QListView" name="microfeatures_listView"/>
      </item>
+     <item>
+      <widget class="QCheckBox" name="features_sign_cb">
+       <property name="text">
+        <string>Включить указатели</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -472,6 +481,24 @@
     <string>Home</string>
    </property>
   </action>
+  <action name="enableFeaturesSigns_action">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/icons/close_all_ic.png</normaloff>:/icons/icons/close_all_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Включить указатели</string>
+   </property>
+   <property name="toolTip">
+    <string>Включение/Выключение отрисовки стрелок, элипсов и т.д.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -543,6 +570,22 @@
     <hint type="sourcelabel">
      <x>286</x>
      <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>features_sign_cb</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>enableFeaturesSigns_action</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>162</x>
+     <y>575</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
