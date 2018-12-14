@@ -6,12 +6,15 @@
 #include <QFile>
 #include <QObject>
 #include <QGraphicsItem>
+#include <QTextStream>
+#include <QDebug>
 
 enum class Sign
 {
     Arrow,
     Ellipse,
-    Square
+    Square,
+    NoSign
 };
 
 enum class SignType
@@ -54,6 +57,8 @@ public slots:
 
 private:
     QVector<ImgGraphicsObject> graphicsObjects_;
+    Sign detectSign(QString signStr) const;
+    static void printSign(const Sign &s);
 
 };
 
