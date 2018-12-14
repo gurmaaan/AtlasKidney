@@ -30,6 +30,11 @@ public:
     ImgGraphicsObject();
     ImgGraphicsObject(QString imgName, int microFeatureNum, Sign type, QPoint startPoint, QPoint endPoint);
     QGraphicsItem *graphicsItem() const;
+    QString imgName() const;
+    int microFeatureNum() const;
+    Sign type() const;
+    QPoint startPoint() const;
+    QPoint endPoint() const;
 
 private:
     QString imgName_;
@@ -42,6 +47,8 @@ private:
 
 };
 
+QDebug operator<< (QDebug os, const ImgGraphicsObject& igo);
+
 class CSVService : public QObject
 {
     Q_OBJECT
@@ -50,15 +57,12 @@ public:
 
     QVector<ImgGraphicsObject> readCSVFile(QString path) const;
     void setGraphicsObjects(const QVector<ImgGraphicsObject> &graphicsObjects);
-
-signals:
-
-public slots:
+    static QString printSign(const Sign &s);
 
 private:
     QVector<ImgGraphicsObject> graphicsObjects_;
     Sign detectSign(QString signStr) const;
-    static void printSign(const Sign &s);
+    QPoint detectPoint(QString pointStr) const;
 
 };
 
