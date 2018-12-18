@@ -12,9 +12,9 @@
 #include <QLabel>
 #include <QDialog>
 #include <QDesktopWidget>
-
+#include <QScreen>
 #include <static.h>
-#include <csvservice.h>
+#include <model/graphicsobject.h>
 
 namespace Ui {
 class ImageWidget;
@@ -31,6 +31,7 @@ public:
     void setFrontImage(const QPixmap &value);
     void setImages(const QVector<QPixmap> &value);
     void scaleImage(int k);
+    void paintSign(QString imageName, GraphicsObject grO);
 
 public slots:
     void setBasePath(const QString &basePath);
@@ -53,7 +54,6 @@ private:
     QStringList imgNames_;
     QGraphicsScene *scene_;
     int k_;
-    QVector<ImgGraphicsObject> imgGraphicsObjects_;
 
     bool fileExists(QString path);
     QSize scaledSize(int k);

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>697</width>
-    <height>593</height>
+    <width>796</width>
+    <height>918</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>697</width>
+     <width>796</width>
      <height>21</height>
     </rect>
    </property>
@@ -79,8 +79,8 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>265</width>
-     <height>238</height>
+     <width>295</width>
+     <height>282</height>
     </size>
    </property>
    <property name="features">
@@ -96,191 +96,231 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="patientContent_dock">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <layout class="QVBoxLayout" name="previousPatient_v_layout">
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QToolButton" name="previousPatient_btn">
-         <property name="text">
-          <string/>
+        <layout class="QVBoxLayout" name="previousPatient_v_layout">
+         <item>
+          <widget class="QToolButton" name="previousPatient_btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/previous_ic.png</normaloff>:/icons/icons/previous_ic.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="firstPatient_btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/first.png</normaloff>:/icons/icons/first.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="prevPatient_v_layout">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Информация о пациенте</string>
          </property>
-         <property name="icon">
-          <iconset resource="../resource.qrc">
-           <normaloff>:/icons/icons/previous_ic.png</normaloff>:/icons/icons/previous_ic.png</iconset>
-         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="id_label">
+            <property name="text">
+             <string>id</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="id_spin">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="medicalHistory_label">
+            <property name="text">
+             <string>История болезни</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="medicalHistory_le"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="sex_label">
+            <property name="text">
+             <string>Пол</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="sex_h_layout">
+            <item>
+             <widget class="QRadioButton" name="sexM_radio">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>М</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="sexF_radio">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Ж</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="age_label">
+            <property name="text">
+             <string>Возраст</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="age_spin">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="failDate_lbl">
+            <property name="text">
+             <string>Год заболевания</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="failDate_spin">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="firstPatient_btn">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../resource.qrc">
-           <normaloff>:/icons/icons/first.png</normaloff>:/icons/icons/first.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="prevPatient_v_layout">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+        <layout class="QVBoxLayout" name="patient_box_v_layout">
+         <item>
+          <widget class="QToolButton" name="nextPatient_btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/next_ic.png</normaloff>:/icons/icons/next_ic.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="lastPatient_Btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/last.png</normaloff>:/icons/icons/last.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="nextPatient_v_spacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="jumpToPatient_gb">
        <property name="title">
-        <string>Информация о пациенте</string>
+        <string>Переход к пациенту </string>
        </property>
-       <layout class="QFormLayout" name="formLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="id_label">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="jumpID_label">
           <property name="text">
            <string>id</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QSpinBox" name="id_spin">
-          <property name="readOnly">
-           <bool>true</bool>
+        <item>
+         <widget class="QSpinBox" name="jump_sb">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
           </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::NoButtons</enum>
+          <property name="maximum">
+           <number>10000</number>
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="medicalHistory_label">
+        <item>
+         <widget class="QToolButton" name="jump_btn">
           <property name="text">
-           <string>История болезни</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="medicalHistory_le"/>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="sex_label">
-          <property name="text">
-           <string>Пол</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <layout class="QHBoxLayout" name="sex_h_layout">
-          <item>
-           <widget class="QRadioButton" name="sexM_radio">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>М</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="sexF_radio">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Ж</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="age_label">
-          <property name="text">
-           <string>Возраст</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QSpinBox" name="age_spin">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::NoButtons</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="failDate_lbl">
-          <property name="text">
-           <string>Год заболевания</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QSpinBox" name="failDate_spin">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::NoButtons</enum>
+           <string>-&gt;</string>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="patient_box_v_layout">
-       <item>
-        <widget class="QToolButton" name="nextPatient_btn">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../resource.qrc">
-           <normaloff>:/icons/icons/next_ic.png</normaloff>:/icons/icons/next_ic.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="lastPatient_Btn">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../resource.qrc">
-           <normaloff>:/icons/icons/last.png</normaloff>:/icons/icons/last.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="nextPatient_v_spacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
      </item>
     </layout>
    </widget>
@@ -301,13 +341,28 @@
    <widget class="QWidget" name="microfeatures_dockContent">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QListView" name="microfeatures_listView"/>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="features_sign_cb">
-       <property name="text">
-        <string>Включить указатели</string>
+      <widget class="QTreeWidget" name="microfeatures_treeWidget">
+       <property name="columnCount">
+        <number>3</number>
        </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string notr="true">2</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string notr="true">3</string>
+        </property>
+       </column>
       </widget>
      </item>
     </layout>
@@ -500,6 +555,18 @@
     <string>Ctrl+A</string>
    </property>
   </action>
+  <action name="jumpToPatient_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/data_file_reference_icon.png</normaloff>:/icons/icons/data_file_reference_icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Переход к пациенту</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть данные о пациенте с указанным id</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -579,14 +646,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>features_sign_cb</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>enableFeaturesSigns_action</receiver>
-   <slot>setChecked(bool)</slot>
+   <sender>jump_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>zoom_in_action</receiver>
+   <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>162</x>
-     <y>575</y>
+     <x>315</x>
+     <y>372</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

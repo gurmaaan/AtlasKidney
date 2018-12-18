@@ -8,8 +8,6 @@ ImageWidget::ImageWidget(QWidget *parent) :
     ui->setupUi(this);
     previewModel_ = new QStandardItemModel;
     scene_ = new QGraphicsScene;
-    CSVService csvService;
-    imgGraphicsObjects_ = csvService.readCSVFile(CSVFILE);
     k_ = 0;
 
     ui->preview_table->setModel(previewModel_);
@@ -30,6 +28,7 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
     for (int i = 0; i < imagesLocalPathes.size(); i++)
     {
         QString imgName = imagesLocalPathes.at(i);
+        imgNames_.push_back(imgName);
         QString fullPath = baseAbsolutePath + "/" + imgName;
         QPixmap pixMapAtI(fullPath);
         imgVector.push_back(pixMapAtI);
@@ -101,7 +100,7 @@ void ImageWidget::setImgNames(const QStringList &imgNames) {
 
 void ImageWidget::drawSigns(bool status)
 {
-
+//    QGraphicsRectItem* item = new QGraphicsRectItem()
 }
 
 void ImageWidget::scaleImage(int k)
@@ -109,9 +108,28 @@ void ImageWidget::scaleImage(int k)
     scene_->clear();
     QGraphicsPixmapItem* item = new QGraphicsPixmapItem(frontImage_.scaled(scaledSize(k), Qt::KeepAspectRatio));
     scene_->addItem(item);
-
+    if(k ==0)
+        ui->main_photo_gv->fitInView(item, Qt::KeepAspectRatio);
+    else
+        item->setPos(0, 0);
     ui->main_photo_gv->show();
-    ui->main_photo_gv->mapToScene(ui->main_photo_gv->rect().center() );
+
+}
+
+void ImageWidget::paintSign(QString imageName, GraphicsObject grO)
+{
+    for(int i = 0; i < imgNames_.size(); i++)
+    {
+        if(imageName == imgNames_.at(i))
+        {
+            if(images_.size() == imgNames_.size())
+            {
+                ui->preview_table->selectColumn(i);
+                setFrontImage(images_.at(i));
+                ui->main_photo_gv->scene()->addItem(grO.group());
+            }
+        }
+    }
 }
 
 void ImageWidget::setBasePath(const QString &basePath)
@@ -145,7 +163,7 @@ void ImageWidget::on_fullscreen_toolbtn_clicked()
     else
         activePm = images_.at(0);
 
-    label->setPixmap(activePm.scaled( QApplication::desktop()->screenGeometry().size()));
+    label->setPixmap(activePm.scaled( QGuiApplication::screens().at(0)->availableSize() ) );
     layout->addWidget(label);
     fsDialog->setLayout(layout);
     fsDialog->showFullScreen();

@@ -29,15 +29,15 @@ SOURCES += \
         dialogs/mainwindow.cpp \
         db_connector.cpp \
         dialogs/authdialog.cpp \
-        widgets/imagewidget.cpp \ 
-        csvservice.cpp
+        widgets/imagewidget.cpp \  
+    model/graphicsobject.cpp
 
 HEADERS += \
         dialogs/mainwindow.h \
         static.h \
         dialogs/authdialog.h \
         widgets/imagewidget.h \
-        csvservice.h
+    model/graphicsobject.h
 
 
 HEADERS += \

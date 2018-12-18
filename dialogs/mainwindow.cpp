@@ -6,10 +6,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     showMaximized();
-    authDialog = new AuthDialog(db_);
-    authDialog->show();
+
+    readCSVFile(CSVFILE);
+
+    authDialog_ = new AuthDialog(db_);
+    authDialog_->show();
 
     connectAll();
 }
@@ -36,6 +38,9 @@ void MainWindow::authAccepted()
         ui->id_spin->setMaximum(patients_.size());
         ui->id_spin->setMinimum(0);
 
+        ui->jump_sb->setMaximum(patients_.size());
+        ui->jump_sb->setMinimum(0);
+
         int maxAge = 0;
         int maxDateFail = 0;
         for(PatientInfo pi : patients_)
@@ -55,13 +60,14 @@ void MainWindow::authAccepted()
         changePatient(0);
     }
 }
+
 void MainWindow::connectAll()
 {
-    connect(authDialog, &AuthDialog::authStatusChanged,
+    connect(authDialog_, &AuthDialog::authStatusChanged,
             this, &MainWindow::enableMainWindow);
-    connect(authDialog, &AuthDialog::accepted,
+    connect(authDialog_, &AuthDialog::accepted,
             this, &MainWindow::authAccepted);
-    connect(authDialog, &AuthDialog::basePathChanged,
+    connect(authDialog_, &AuthDialog::basePathChanged,
             ui->img_widget, &ImageWidget::setBasePath);
     connect(this, &MainWindow::imgNamesListChanged,
             ui->img_widget, &ImageWidget::setImgNames);
@@ -82,27 +88,54 @@ void MainWindow::changePatient(int patientID)
             ui->sexF_radio->setChecked(true);
         else if(QString(pi.sex()) == "M")
             ui->sexM_radio->setChecked(true);
-        else {
+        else
+        {
             ui->sexF_radio->setChecked(false);
             ui->sexM_radio->setChecked(false);
         }
         QVector<ImageInfo> images = pi.images();
         QStringList imgList;
         for (ImageInfo i: images)
+        {
             imgList.push_back(i.path());
+        }
 
         emit imgNamesListChanged(imgList);
-
-        ui->microfeatures_listView->reset();
-    //    QStandardItemModel *listModel = new QStandardItemModel();
-    //    QStringList microFeaturesList = pi.macroFeatures();
-    //    for(QString feature : microFeaturesList)
-    //    {
-    //        QStandardItem *listItem = new QStandardItem(feature);
-    //        listModel->appendRow(listItem);
-    //    }
-    //    ui->microfeatures_listView->setModel(listModel);
     }
+}
+
+void MainWindow::readCSVFile(QString path)
+{
+    QFile csvFIle(path);
+
+    //QVector<ImgGraphicsObject*> objVector;
+    if( !csvFIle.open(QFile::ReadOnly | QFile::Text) )
+    {
+        qDebug() << "CSV file not exist";
+    }
+    else
+    {
+        QTextStream in(&csvFIle);
+        while (!in.atEnd())
+        {
+            QString line = in.readLine();
+            QStringList l = line.split('\t');
+            if(l.count() >=5)
+            {
+                GraphicsObject* go = new GraphicsObject(l);
+                grObjectsVector_.push_back(go);
+            }
+            else
+                continue;
+        }
+        qDebug() << grObjectsVector_.count();
+    }
+}
+
+void MainWindow::setModelHeaders(QStandardItemModel *model, QStringList headers)
+{
+    for(int i = 0; i < headers.count(); i++)
+        model->setHorizontalHeaderItem(i, new QStandardItem(headers.at(i)));
 }
 
 void MainWindow::setPatients(const QVector<PatientInfo> &patients)
@@ -171,4 +204,14 @@ void MainWindow::on_zoom_in_action_triggered()
 void MainWindow::on_usermanual_action_triggered()
 {
    //TODO open pdf with manual
+}
+
+void MainWindow::on_jumpToPatient_action_triggered()
+{
+    changePatient(ui->jump_sb->value());
+}
+
+void MainWindow::on_microfeatures_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+{
+
 }
