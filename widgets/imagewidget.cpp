@@ -6,6 +6,12 @@ ImageWidget::ImageWidget(QWidget *parent) :
     ui(new Ui::ImageWidget)
 {
     ui->setupUi(this);
+    previewModel_ = new QStandardItemModel;
+    scene_ = new QGraphicsScene;
+    k_ = 0;
+
+    ui->preview_table->setModel(previewModel_);
+    ui->main_photo_gv->setScene(scene_);
 }
 
 ImageWidget::~ImageWidget()
@@ -15,61 +21,43 @@ ImageWidget::~ImageWidget()
 
 void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes)
 {
-    createPreviewElemnts(imagesLocalPathes.size());
-    QList<QObject*> previewElemnts = ui->carousel_h_layout->children();
-    for(int i = 0 ; i < imagesLocalPathes.size(); i++)
+    previewModel_->clear();
+    QList<QStandardItem*> previewRow;
+    QList<QStandardItem*> imgNameRow;
+    QVector<QPixmap> imgVector;
+    for (int i = 0; i < imagesLocalPathes.size(); i++)
     {
-        QString fullPath = baseAbsolutePath + "/" + imagesLocalPathes.at(i);
-        qDebug() << fullPath;
+        QString imgName = imagesLocalPathes.at(i);
+        imgNames_.push_back(imgName);
+        QString fullPath = baseAbsolutePath + "/" + imgName;
+        QPixmap pixMapAtI(fullPath);
+        imgVector.push_back(pixMapAtI);
+        QStandardItem* item = new QStandardItem();
         if(fileExists(fullPath))
         {
-            //QPixmap imgFromList(fullPath);
-            images_.push_back(QPixmap(fullPath));
+            item->setIcon(pixMapAtI);
         }
         else
-        {
-            qDebug() << fullPath << "doesn't exist";
-            images_.push_back(createPixmapWithtext(ui->first_label->size(), imagesLocalPathes.at(i)));
+        {            
+            QString errorMsg = imagesLocalPathes.at(i) + "\n" + "doesn't exist";
+            qDebug() << errorMsg << endl << fullPath << endl;
+            QPixmap nullPixmap = createPixmapWithtext(errorMsg);
+            item->setIcon(QIcon(nullPixmap));
         }
-    }
-    ui->first_label->setPixmap(images_.at(0));
-}
-
-void ImageWidget::createPreviewElemnts(int numOfElemnts)
-{
-    QLayout* cl = ui->carousel_h_layout;
-    QLabel* fl = ui->first_label;
-
-    QString labelsStyleStr = fl->styleSheet();
-    QRect labelsGeometry = fl->geometry();
-
-    QRect labelsRect = fl->frameGeometry();
-    int labelsStyle = fl->frameStyle();
-    QFrame::Shape labelsShape = fl->frameShape();
-    QFrame::Shadow labelsShadow = fl->frameShadow();
-
-    QRect spacerSize = ui->carousel_h_spacer->geometry();
-    QSpacerItem *cSpacer = new QSpacerItem(spacerSize.width() - (labelsGeometry.width() * numOfElemnts), spacerSize.height());
-    for(int i = 0 ; i < cl->count(); i++)
-        cl->removeItem(cl->itemAt(i));
-
-    for(int i = 0; i < numOfElemnts - 1; i++)
-    {
-        QLabel *imgLabel = new QLabel();
-        imgLabel->setStyleSheet(labelsStyleStr);
-
-        imgLabel->setFrameRect(labelsRect);
-        imgLabel->setFrameShadow(labelsShadow);
-        imgLabel->setFrameShape(labelsShape);
-        imgLabel->setFrameStyle(labelsStyle);
-
-        imgLabel->setGeometry(labelsGeometry);
-        imgLabel->setMinimumWidth(fl->minimumWidth());
-        imgLabel->setMinimumHeight(fl->minimumHeight());
-        cl->addWidget(imgLabel);
+        previewRow.append(item);
+        QStandardItem* nameItem = new QStandardItem(imgName);
+        nameItem->setStatusTip(imgName);
+        nameItem->setWhatsThis(imgName);
+        imgNameRow.append(nameItem);
     }
 
-    cl->addItem(cSpacer);
+    setImages(imgVector);
+    setFrontImage(imgVector.at(0));
+
+    previewModel_->appendRow(previewRow);
+    previewModel_->appendRow(imgNameRow);
+    ui->preview_table->setRowHeight(0,100);
+    ui->preview_table->setCurrentIndex( ui->preview_table->model()->index(0,0));
 }
 
 bool ImageWidget::fileExists(QString path)
@@ -83,7 +71,19 @@ bool ImageWidget::fileExists(QString path)
     }
 }
 
-QPixmap ImageWidget::createPixmapWithtext(QSize size, QString text)
+QSize ImageWidget::scaledSize(int k)
+{
+    double H0 = static_cast<double>(frontImage_.height());
+    double W0 = static_cast<double>(frontImage_.width());
+    double dk = static_cast<double>(k) / static_cast<double>(100);
+
+    int W = static_cast<int>(W0 + W0*dk);
+    int H = static_cast<int>(H0 + H0*dk);
+
+    return QSize(W, H);
+}
+
+QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
 {
     QPixmap pixmap(size);
     pixmap.fill( QColor(PREVIEW_COLOR) );
@@ -93,10 +93,43 @@ QPixmap ImageWidget::createPixmapWithtext(QSize size, QString text)
     return pixmap;
 }
 
-void ImageWidget::setImgNames(const QStringList &imgNames)
-{
+void ImageWidget::setImgNames(const QStringList &imgNames) {
     imgNames_ = imgNames;
     loadImages(basePath_, imgNames_);
+}
+
+void ImageWidget::drawSigns(bool status)
+{
+//    QGraphicsRectItem* item = new QGraphicsRectItem()
+}
+
+void ImageWidget::scaleImage(int k)
+{
+    scene_->clear();
+    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(frontImage_.scaled(scaledSize(k), Qt::KeepAspectRatio));
+    scene_->addItem(item);
+    if(k ==0)
+        ui->main_photo_gv->fitInView(item, Qt::KeepAspectRatio);
+    else
+        item->setPos(0, 0);
+    ui->main_photo_gv->show();
+
+}
+
+void ImageWidget::paintSign(QString imageName, GraphicsObject grO)
+{
+    for(int i = 0; i < imgNames_.size(); i++)
+    {
+        if(imageName == imgNames_.at(i))
+        {
+            if(images_.size() == imgNames_.size())
+            {
+                ui->preview_table->selectColumn(i);
+                setFrontImage(images_.at(i));
+                ui->main_photo_gv->scene()->addItem(grO.group());
+            }
+        }
+    }
 }
 
 void ImageWidget::setBasePath(const QString &basePath)
@@ -109,12 +142,54 @@ void ImageWidget::setImages(const QVector<QPixmap> &value)
     images_ = value;
 }
 
-void ImageWidget::setFrontImage(const QImage &value)
+void ImageWidget::setFrontImage(const QPixmap &value)
 {
     frontImage_ = value;
+
+    scaleImage(0);
 }
 
 void ImageWidget::on_fullscreen_toolbtn_clicked()
 {
-    createPreviewElemnts(5);
+    QDialog *fsDialog = new QDialog;
+    QVBoxLayout *layout = new QVBoxLayout;
+    QLabel *label = new QLabel;
+
+    QPixmap activePm;
+    int index = ui->preview_table->selectionModel()->selectedIndexes().at(0).column();
+    qDebug() << "Selected column " << index;
+    if(index >= 0)
+        activePm = images_.at(index);
+    else
+        activePm = images_.at(0);
+
+    label->setPixmap(activePm.scaled( QGuiApplication::screens().at(0)->availableSize() ) );
+    layout->addWidget(label);
+    fsDialog->setLayout(layout);
+    fsDialog->showFullScreen();
+}
+
+void ImageWidget::on_preview_table_clicked(const QModelIndex &index)
+{
+    setFrontImage(images_.at(index.column()));
+}
+
+void ImageWidget::on_plus_toolbtn_clicked()
+{
+    k_+=5;
+    scaleImage(k_);
+    ui->zoom_v_slider->setValue(k_);
+}
+
+void ImageWidget::on_minus_toolbtn_clicked()
+{
+    k_-=5;
+    scaleImage(k_);
+    ui->zoom_v_slider->setValue(k_);
+}
+
+void ImageWidget::on_zoom_v_slider_sliderMoved(int position)
+{
+    k_ = position;
+    scaleImage(k_);
 }

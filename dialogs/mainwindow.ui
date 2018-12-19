@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>796</width>
+    <height>918</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Гистология клеток почек</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../resource.qrc">
+    <normaloff>:/icons/favicon.ico</normaloff>:/icons/favicon.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="ImageWidget" name="img_widget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>796</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="file_menu">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="quit_action"/>
+   </widget>
+   <widget class="QMenu" name="bd_menu">
+    <property name="title">
+     <string>БД</string>
+    </property>
+    <addaction name="previouspatient_action"/>
+    <addaction name="nextpatient_action"/>
+    <addaction name="lastPatient_action"/>
+    <addaction name="firstPatient_action"/>
+    <addaction name="separator"/>
+    <addaction name="disconnect_action"/>
+   </widget>
+   <widget class="QMenu" name="view_menu">
+    <property name="title">
+     <string>Вид</string>
+    </property>
+    <addaction name="zoom_out_action"/>
+    <addaction name="zoom_in_action"/>
+    <addaction name="fullscreen_action"/>
+    <addaction name="separator"/>
+    <addaction name="enableFeaturesSigns_action"/>
+   </widget>
+   <widget class="QMenu" name="info_menu">
+    <property name="title">
+     <string>Справка</string>
+    </property>
+    <addaction name="usermanual_action"/>
+    <addaction name="devmanual_action"/>
+    <addaction name="github_action"/>
+   </widget>
+   <addaction name="file_menu"/>
+   <addaction name="bd_menu"/>
+   <addaction name="view_menu"/>
+   <addaction name="info_menu"/>
+  </widget>
+  <widget class="QDockWidget" name="patient_dock">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>295</width>
+     <height>282</height>
+    </size>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>Пациент</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="patientContent_dock">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="previousPatient_v_layout">
+         <item>
+          <widget class="QToolButton" name="previousPatient_btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/previous_ic.png</normaloff>:/icons/icons/previous_ic.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="firstPatient_btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/first.png</normaloff>:/icons/icons/first.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="prevPatient_v_layout">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Информация о пациенте</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="id_label">
+            <property name="text">
+             <string>id</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="id_spin">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="medicalHistory_label">
+            <property name="text">
+             <string>История болезни</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="medicalHistory_le"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="sex_label">
+            <property name="text">
+             <string>Пол</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="sex_h_layout">
+            <item>
+             <widget class="QRadioButton" name="sexM_radio">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>М</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="sexF_radio">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Ж</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="age_label">
+            <property name="text">
+             <string>Возраст</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="age_spin">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="failDate_lbl">
+            <property name="text">
+             <string>Год заболевания</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="failDate_spin">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="buttonSymbols">
+             <enum>QAbstractSpinBox::NoButtons</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="patient_box_v_layout">
+         <item>
+          <widget class="QToolButton" name="nextPatient_btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/next_ic.png</normaloff>:/icons/icons/next_ic.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="lastPatient_Btn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resource.qrc">
+             <normaloff>:/icons/icons/last.png</normaloff>:/icons/icons/last.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="nextPatient_v_spacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="jumpToPatient_gb">
+       <property name="title">
+        <string>Переход к пациенту </string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="jumpID_label">
+          <property name="text">
+           <string>id</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="jump_sb">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="jump_btn">
+          <property name="text">
+           <string>-&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="microfeatures_dock">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::BottomDockWidgetArea|Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>Микропризнаки</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="microfeatures_dockContent">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTreeWidget" name="microfeatures_treeWidget">
+       <property name="columnCount">
+        <number>3</number>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string notr="true">2</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string notr="true">3</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="zoom_in_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/zoom_in_ic.png</normaloff>:/icons/icons/zoom_in_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Увеличить</string>
+   </property>
+   <property name="toolTip">
+    <string>Увеличить изображение</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+=</string>
+   </property>
+  </action>
+  <action name="zoom_out_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/zoom_out_ic.png</normaloff>:/icons/icons/zoom_out_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Уменьшить</string>
+   </property>
+   <property name="toolTip">
+    <string>Уменьшить изображение</string>
+   </property>
+  </action>
+  <action name="github_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/github.png</normaloff>:/icons/icons/github.png</iconset>
+   </property>
+   <property name="text">
+    <string>GitHub</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть репозиторий Github проекта</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+G, Meta+H</string>
+   </property>
+  </action>
+  <action name="quit_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/quit.png</normaloff>:/icons/icons/quit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Выход</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+Q</string>
+   </property>
+  </action>
+  <action name="usermanual_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/user_manual_ic.png</normaloff>:/icons/icons/user_manual_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Руководство пользователя</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть инструкцию пользователя к программе</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="devmanual_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/dev_manual_icon.png</normaloff>:/icons/icons/dev_manual_icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Документация разработчика</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="disconnect_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/delete_param_ic.png</normaloff>:/icons/icons/delete_param_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Отключить БД</string>
+   </property>
+   <property name="toolTip">
+    <string>Разорвать соединение с базой MySQL</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="fullscreen_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/full_screen_ic.png</normaloff>:/icons/icons/full_screen_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Во весь экран</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="nextpatient_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/next_ic.png</normaloff>:/icons/icons/next_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Следующий пациент</string>
+   </property>
+   <property name="toolTip">
+    <string>Выбор следующего пациента</string>
+   </property>
+   <property name="shortcut">
+    <string>PgUp</string>
+   </property>
+  </action>
+  <action name="previouspatient_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/previous_ic.png</normaloff>:/icons/icons/previous_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Предыдущий пациент</string>
+   </property>
+   <property name="toolTip">
+    <string>Предыдущий пациент</string>
+   </property>
+   <property name="shortcut">
+    <string>PgDown</string>
+   </property>
+  </action>
+  <action name="lastPatient_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/last.png</normaloff>:/icons/icons/last.png</iconset>
+   </property>
+   <property name="text">
+    <string>Последний пациент</string>
+   </property>
+   <property name="toolTip">
+    <string>Выбор последнего пациента</string>
+   </property>
+   <property name="shortcut">
+    <string>End</string>
+   </property>
+  </action>
+  <action name="firstPatient_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/first.png</normaloff>:/icons/icons/first.png</iconset>
+   </property>
+   <property name="text">
+    <string>Первый пациент</string>
+   </property>
+   <property name="toolTip">
+    <string>Переход к первому пациенту</string>
+   </property>
+   <property name="shortcut">
+    <string>Home</string>
+   </property>
+  </action>
+  <action name="enableFeaturesSigns_action">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/close_all_ic.png</normaloff>:/icons/icons/close_all_ic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Включить указатели</string>
+   </property>
+   <property name="toolTip">
+    <string>Включение/Выключение отрисовки стрелок, элипсов и т.д.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="jumpToPatient_action">
+   <property name="icon">
+    <iconset resource="../resource.qrc">
+     <normaloff>:/icons/icons/data_file_reference_icon.png</normaloff>:/icons/icons/data_file_reference_icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Переход к пациенту</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть данные о пациенте с указанным id</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ImageWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets\imagewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../resource.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>nextPatient_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>nextpatient_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>167</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>previousPatient_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>previouspatient_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>17</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>firstPatient_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>firstPatient_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>22</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lastPatient_Btn</sender>
+   <signal>clicked()</signal>
+   <receiver>lastPatient_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>98</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>jump_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>zoom_in_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>315</x>
+     <y>372</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

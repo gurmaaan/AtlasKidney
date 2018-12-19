@@ -62,4 +62,7 @@
         <file>icons/last.png</file>
         <file>icons/first.png</file>
     </qresource>
+    <qresource prefix="/data">
+        <file>model/signs.csv</file>
+    </qresource>
 </RCC>

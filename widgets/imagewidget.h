@@ -4,9 +4,17 @@
 #include <QWidget>
 #include <QDebug>
 #include <QFileInfo>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QLabel>
+#include <QDialog>
+#include <QDesktopWidget>
+#include <QScreen>
 #include <static.h>
+#include <model/graphicsobject.h>
 
 namespace Ui {
 class ImageWidget;
@@ -20,25 +28,36 @@ public:
     explicit ImageWidget(QWidget *parent = nullptr);
     ~ImageWidget();
     void loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes);
-    void setFrontImage(const QImage &value);
+    void setFrontImage(const QPixmap &value);
     void setImages(const QVector<QPixmap> &value);
+    void scaleImage(int k);
+    void paintSign(QString imageName, GraphicsObject grO);
 
 public slots:
     void setBasePath(const QString &basePath);
     void setImgNames(const QStringList &imgNames);
+    void drawSigns(bool status);
+    void on_plus_toolbtn_clicked();
+    void on_minus_toolbtn_clicked();
+    void on_fullscreen_toolbtn_clicked();
 
 private slots:
-    void on_fullscreen_toolbtn_clicked();
+    void on_preview_table_clicked(const QModelIndex &index);
+    void on_zoom_v_slider_sliderMoved(int position);
 
 private:
     Ui::ImageWidget *ui;
-    void createPreviewElemnts(int numOfElemnts);
-    QImage frontImage_;
+    QStandardItemModel *previewModel_;
+    QPixmap frontImage_;
     QVector<QPixmap> images_;
     QString basePath_;
     QStringList imgNames_;
+    QGraphicsScene *scene_;
+    int k_;
+
     bool fileExists(QString path);
-    QPixmap createPixmapWithtext(QSize size, QString text);
+    QSize scaledSize(int k);
+    QPixmap createPixmapWithtext(QString text, QSize size = QSize(100, 100));
 };
 
 #endif // IMAGEWIDGET_H

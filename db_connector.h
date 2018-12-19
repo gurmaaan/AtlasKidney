@@ -4,6 +4,28 @@
 #include <QtSql>
 #include <QDebug>
 
+class ImageInfo {
+public:
+    ImageInfo() {}
+
+    //NOTE: кастыль, потом убрать
+    ImageInfo(QString path){ m_path = path;}
+
+    ImageInfo(QString path, QStringList main_feat, QStringList sub_feat) :
+        m_path      (path),
+        m_main_feat (main_feat),
+        m_sub_feat  (sub_feat) {}
+
+    QString     path      () const;
+    QStringList main_feat () const;
+    QStringList sub_feat  () const;
+
+private:
+    QString m_path;
+    QStringList m_main_feat;
+    QStringList m_sub_feat;
+};
+
 class PatientInfo
 {
 public:
@@ -12,28 +34,26 @@ public:
                  QString historyNum,
                  int age,
                  int dateOfFallIll,
-                 QStringList imagesPaths,
-                 QStringList macroFeatures,
+                 QVector<ImageInfo> images,
                  QChar sex);
 
-    int idPatient() const;
-    QString historyNum() const;
-    int age() const;
-    int dateOfFallIll() const;
-    QStringList imagesPaths() const;
-    QStringList macroFeatures() const;
+    int         idPatient     () const;
+    int         age           () const;
+    int         dateOfFallIll () const;
+    QChar       sex           () const;
+    QString     historyNum    () const;
+    QVector<ImageInfo> images () const;
 
     friend QDebug operator<<(QDebug os, const PatientInfo& p);
 
-    //operator QString() const { return "<put your QString here>"; }
+
 private:
     int m_idPatient;
-    QString m_historyNum;
     int m_age;
     int m_dateOfFallIll;
-    QStringList m_imagesPaths;
-    QStringList m_macroFeatures;
-    QChar m_sex;
+    QChar              m_sex;
+    QString            m_historyNum;
+    QVector<ImageInfo> m_images;
 };
 
 QDebug operator<< (QDebug os, const PatientInfo& p);
