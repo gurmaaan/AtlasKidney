@@ -26,11 +26,9 @@ public:
     void setPath(QString path, QString fname) { this->path = path; this->fname = fname; first = true; }
     void setType(QString type) { this->type = type; first = true;}
 
-    CustomLabel( QWidget* parent = nullptr, Qt::WindowFlags f = nullptr )
-        : QLabel( parent, f ) { }
+    CustomLabel( QWidget* parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    CustomLabel( const QString& text, QWidget* parent = nullptr, Qt::WindowFlags f = nullptr )
-        : QLabel( text, parent, f ) { }
+    CustomLabel( const QString& text, QWidget* parent = nullptr, Qt::WindowFlags f = nullptr );
 
 
 protected:
