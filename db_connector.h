@@ -66,7 +66,7 @@ public:
     DbConnector();
     bool checkLoginPass (const QString& login, const QString& pswd) const;
     QMap<int,PatientInfo> getAllPatients () const;
-    PatientInfo getPatientInfoById(int id, PatientInfo patinf) const;
+    PatientInfo updatePatientInfoById(int id, PatientInfo &patinf) const;
 private:
     QSqlDatabase db;
     bool isDBCon = false;

@@ -95,7 +95,7 @@ QMap<int,PatientInfo> DbConnector::getAllPatients() const {
     return for_ret;
 }
 
-PatientInfo DbConnector::getPatientInfoById(int id, PatientInfo patinf) const {
+PatientInfo DbConnector::updatePatientInfoById(int id, PatientInfo& patinf) const {
 
     QString query = "select UNIQUEFILENAME from IMAGES where ID_PATIENT=" + QString::number(id);
     auto tmp_ans = db.exec(query);

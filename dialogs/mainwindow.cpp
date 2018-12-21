@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connectAll();
 
+    //NOTE in reales it shouldn't be
     authDialog_->setPath(QString(IMG_PATH));
 }
 
@@ -89,7 +90,8 @@ void MainWindow::changePatient(int patientID)
     {
         //FIXME for Dima
         // This is costyl. Change your own id with id from DB
-        PatientInfo pi = patients_[patients_.keys().at(patientID)];
+        PatientInfo& pi = patients_[patients_.keys().at(patientID)];
+
         ui->id_spin->setValue(patientID);
         ui->medicalHistory_le->setText(pi.historyNum());
         ui->age_spin->setValue(pi.age());
@@ -110,7 +112,20 @@ void MainWindow::changePatient(int patientID)
 //            imgList.push_back(i.path());
 //        }
 
-        qDebug() << images;
+        if(!pi.getIsDownloadedFromDb())
+            /*pi =*/ db_.updatePatientInfoById(patients_.keys().at(patientID), pi);
+
+
+        //FIXME for Dima. Some example of using new PatientInfo
+
+        qDebug() << pi.getImages().keys()[0];
+
+        qDebug() << "All features: " << (pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"]).keys();
+
+        QVector<QPair<QString, QString>> features = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].features();
+        QVector<GraphicsObject> obj = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].objs();
+
+        qDebug() << "All features" << features;
 
         emit imgNamesListChanged(images);
     }
