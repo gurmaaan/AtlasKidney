@@ -19,10 +19,9 @@ GraphicsObject::GraphicsObject(QStringList csvRow)
     }
 }
 
-GraphicsObject::GraphicsObject(const GraphicsObject &g)
-{
-    GraphicsObject(g.imgName(), g.microFeatureID(), g.type(), g.startPoint(), g.endPoint());
-}
+GraphicsObject::GraphicsObject(const GraphicsObject &g) :
+    imgName_(g.imgName_), microFeatureID_(g.microFeatureID_), type_(g.type_), startPoint_(g.startPoint_), endPoint_(g.endPoint_), group_(g.group_)
+{ }
 
 QString GraphicsObject::imgName() const
 {

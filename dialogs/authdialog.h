@@ -24,6 +24,7 @@ class AuthDialog : public QDialog
 
 public:
     explicit AuthDialog(DbConnector& db, QWidget *parent = nullptr);
+    void setPath(QString path);
     ~AuthDialog();
 
 private slots:

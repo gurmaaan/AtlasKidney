@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void setPatients(const QVector<PatientInfo> &patients);
+    void setPatients(const QMap<int, PatientInfo> &patients);
 
 signals:
     void imgNamesListChanged(QStringList &imgNames);
@@ -59,7 +59,7 @@ private:
     AuthDialog *authDialog_;
     void connectAll();
     DbConnector db_;
-    QVector<PatientInfo> patients_;
+    QMap<int, PatientInfo> patients_;
     void changePatient(int patientID);
     QVector<GraphicsObject*> grObjectsVector_;
     void readCSVFile(QString path);

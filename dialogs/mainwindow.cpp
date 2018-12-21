@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     authDialog_->show();
 
     connectAll();
+
+    authDialog_->setPath(QString(IMG_PATH));
 }
 
 MainWindow::~MainWindow()
@@ -32,7 +34,13 @@ void MainWindow::enableMainWindow(bool authStatus)
 
 void MainWindow::authAccepted()
 {
+
     setPatients(db_.getAllPatients());
+
+    //TODO for Dima
+    //How to get all keys
+    //qDebug() << patients_.keys();
+
     if(patients_.count() > 0)
     {
         ui->id_spin->setMaximum(patients_.size());
@@ -79,7 +87,9 @@ void MainWindow::changePatient(int patientID)
 {
     if(patients_.count() > 0)
     {
-        PatientInfo pi = patients_.at(patientID);
+        //FIXME for Dima
+        // This is costyl. Change your own id with id from DB
+        PatientInfo pi = patients_[patients_.keys().at(patientID)];
         ui->id_spin->setValue(patientID);
         ui->medicalHistory_le->setText(pi.historyNum());
         ui->age_spin->setValue(pi.age());
@@ -93,14 +103,16 @@ void MainWindow::changePatient(int patientID)
             ui->sexF_radio->setChecked(false);
             ui->sexM_radio->setChecked(false);
         }
-        QVector<ImageInfo> images = pi.images();
-        QStringList imgList;
-        for (ImageInfo i: images)
-        {
-            imgList.push_back(i.path());
-        }
+        QStringList images = pi.getImages().keys();
+//        QStringList imgList;
+//        for (ImageInfo i: images)
+//        {
+//            imgList.push_back(i.path());
+//        }
 
-        emit imgNamesListChanged(imgList);
+        qDebug() << images;
+
+        emit imgNamesListChanged(images);
     }
 }
 
@@ -123,12 +135,13 @@ void MainWindow::readCSVFile(QString path)
             if(l.count() >=5)
             {
                 GraphicsObject* go = new GraphicsObject(l);
+//                qDebug() << go;
                 grObjectsVector_.push_back(go);
             }
             else
                 continue;
         }
-        qDebug() << grObjectsVector_.count();
+//        qDebug() << grObjectsVector_.count();
     }
 }
 
@@ -138,7 +151,7 @@ void MainWindow::setModelHeaders(QStandardItemModel *model, QStringList headers)
         model->setHorizontalHeaderItem(i, new QStandardItem(headers.at(i)));
 }
 
-void MainWindow::setPatients(const QVector<PatientInfo> &patients)
+void MainWindow::setPatients(const QMap<int, PatientInfo> &patients)
 {
     patients_ = patients;
 }

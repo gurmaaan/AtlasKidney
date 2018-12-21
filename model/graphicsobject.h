@@ -20,6 +20,7 @@ public:
     GraphicsObject(QString imgName, int microFeatureID, Sign type, QPointF startPoint, QPointF endPoint);
     GraphicsObject(QStringList csvRow);
     GraphicsObject(const GraphicsObject &g);
+    GraphicsObject() {}
 
     QString imgName() const;
     void setImgName(const QString &imgName);

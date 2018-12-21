@@ -3,69 +3,70 @@
 
 #include <QtSql>
 #include <QDebug>
+#include <QMap>
 
-class ImageInfo {
+#include "model/graphicsobject.h"
+
+class Feature
+{
 public:
-    ImageInfo() {}
-
-    //NOTE: кастыль, потом убрать
-    ImageInfo(QString path){ m_path = path;}
-
-    ImageInfo(QString path, QStringList main_feat, QStringList sub_feat) :
-        m_path      (path),
-        m_main_feat (main_feat),
-        m_sub_feat  (sub_feat) {}
-
-    QString     path      () const;
-    QStringList main_feat () const;
-    QStringList sub_feat  () const;
+    Feature(QVector<QPair<QString, QString>> features, QVector<GraphicsObject> objs) :
+        features_(features), objs_(objs)
+    {}
+    Feature() {}
+    QVector<QPair<QString, QString> > features() const;
+    QVector<GraphicsObject> objs() const;
 
 private:
-    QString m_path;
-    QStringList m_main_feat;
-    QStringList m_sub_feat;
+    QVector<QPair<QString, QString>> features_;
+    QVector<GraphicsObject> objs_;
 };
 
 class PatientInfo
 {
 public:
     PatientInfo() {}
-    PatientInfo(int idPatient,
-                 QString historyNum,
+    PatientInfo( QString historyNum,
                  int age,
                  int dateOfFallIll,
-                 QVector<ImageInfo> images,
+                 QMap<QString, QMap<int, Feature>> images,
                  QChar sex);
 
-    int         idPatient     () const;
     int         age           () const;
     int         dateOfFallIll () const;
     QChar       sex           () const;
     QString     historyNum    () const;
-    QVector<ImageInfo> images () const;
+//    QMap<QString, QMap<int, Feature>> images () const;
 
     friend QDebug operator<<(QDebug os, const PatientInfo& p);
 
 
+    void setImages(const QMap<QString, QMap<int, Feature> > &images);
+
+    bool getIsDownloadedFromDb() const;
+    void setIsDownloadedFromDb();
+
+    QMap<QString, QMap<int, Feature> > getImages() const;
+
 private:
-    int m_idPatient;
+    QString            m_historyNum;
     int m_age;
     int m_dateOfFallIll;
+    QMap<QString, QMap<int, Feature>> m_images;
     QChar              m_sex;
-    QString            m_historyNum;
-    QVector<ImageInfo> m_images;
+
+    bool isDownloadedFromDb; // изменяет состояние после загрузки инфы из БД
 };
 
 QDebug operator<< (QDebug os, const PatientInfo& p);
-
 
 class DbConnector
 {
 public:
     DbConnector();
     bool checkLoginPass (const QString& login, const QString& pswd) const;
-    QVector<PatientInfo> getAllPatients () const;
-
+    QMap<int,PatientInfo> getAllPatients () const;
+    PatientInfo getPatientInfoById(int id, PatientInfo patinf) const;
 private:
     QSqlDatabase db;
     bool isDBCon = false;
