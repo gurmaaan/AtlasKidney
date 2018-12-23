@@ -8,9 +8,9 @@ AuthDialog::AuthDialog(DbConnector& db, QWidget *parent) :
     db(db)
 {
     ui->setupUi(this);
-    setWindowTitle("Авторизация");
+    setWindowTitle(AUTH_DIALOG_TITTLE);
 
-    // NOTE
+    // NOTE credentionals hard coding
     ui->login_le->setText(LOGIN);
     ui->password_le->setText(PASSWORD);
 
@@ -23,7 +23,7 @@ AuthDialog::~AuthDialog()
 
 void AuthDialog::on_path_btn_clicked()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+    QString dir = QFileDialog::getExistingDirectory(this, AUTH_CHOSE_FOLDER,
                                                 QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
                                                 QFileDialog::ShowDirsOnly
                                                 | QFileDialog::DontResolveSymlinks);
@@ -43,7 +43,6 @@ void AuthDialog::on_buttonBox_clicked(QAbstractButton *button)
         // Ok button action
         if(db.checkLoginPass(ui->login_le->text(), ui->password_le->text()) && QDir(ui->path_le->text()).exists() && ui->password_le->text().length() > 0)
         {            
-            emit authStatusChanged(true);
             close();
             this->accept();
         }

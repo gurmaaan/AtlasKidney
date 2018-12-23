@@ -33,7 +33,6 @@ private slots:
     void on_buttonBox_clicked(QAbstractButton *button);
 
 signals:
-    void authStatusChanged(bool accessGranted);
     void basePathChanged(QString pathToFold);
 
 private:

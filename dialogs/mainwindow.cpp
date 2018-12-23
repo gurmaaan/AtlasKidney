@@ -8,8 +8,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     showMaximized();
 
-    readCSVFile(CSVFILE);
-
     authDialog_ = new AuthDialog(db_);
     authDialog_->show();
 
@@ -24,32 +22,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::enableMainWindow(bool authStatus)
-{
-    if(authStatus)
-    {
-        //TODO: либо убрать этот метод либо сделать энейбл/дисейбл гуй
-        qDebug() << "Enable ,main window GUI";
-    }
-}
-
 void MainWindow::authAccepted()
 {
-
     setPatients(db_.getAllPatients());
-
-    //TODO for Dima
-    //How to get all keys
-    //qDebug() << patients_.keys();
+    setPatientIDs(patients_);
 
     if(patients_.count() > 0)
     {
-        ui->id_spin->setMaximum(patients_.size());
-        ui->id_spin->setMinimum(0);
-
-        ui->jump_sb->setMaximum(patients_.size());
-        ui->jump_sb->setMinimum(0);
-
         int maxAge = 0;
         int maxDateFail = 0;
         for(PatientInfo pi : patients_)
@@ -59,21 +38,15 @@ void MainWindow::authAccepted()
             if(pi.dateOfFallIll() > maxDateFail)
                 maxDateFail = pi.dateOfFallIll();
         }
+        setMaxMin(ui->age_spin, 0, maxAge);
+        setMaxMin(ui->failDate_spin, 0, maxDateFail);
 
-        ui->age_spin->setMaximum(0);
-        ui->age_spin->setMaximum(maxAge);
-
-        ui->failDate_spin->setMinimum(0);
-        ui->failDate_spin->setMaximum(maxDateFail);
-
-        changePatient(0);
+        changePatient(getIDByIndex(0));
     }
 }
 
 void MainWindow::connectAll()
 {
-    connect(authDialog_, &AuthDialog::authStatusChanged,
-            this, &MainWindow::enableMainWindow);
     connect(authDialog_, &AuthDialog::accepted,
             this, &MainWindow::authAccepted);
     connect(authDialog_, &AuthDialog::basePathChanged,
@@ -84,86 +57,109 @@ void MainWindow::connectAll()
             ui->img_widget, &ImageWidget::drawSigns);
 }
 
+int MainWindow::getIDByIndex(int index)
+{
+    int id = 0;
+    if(index <= patientIDs_.count() - 1)
+        id = patientIDs_.at(index);
+    else
+        id = 0;
+    return id;
+}
+
+
+int MainWindow::getIndexByID(int id)
+{
+    int index = 0;
+    for(int i = 0; i < patientIDs_.count(); i++)
+    {
+        if(patientIDs_.at(i) == id)
+            index = i;
+    }
+    return index;
+}
+
+void MainWindow::setPatientIDs(const QMap<int, PatientInfo> &patients)
+{
+    QVector<int> ids;
+    for(int k : patients.keys())
+        ids.append(k);
+
+    patientIDs_ = ids;
+    qDebug() << patientIDs_;
+
+    setMaxMin(ui->currentPatient_sb, 0, ids.count() - 1);
+    setMaxMin(ui->totalPatients_sb, 0, ids.count() - 1);
+    ui->totalPatients_sb->setValue(ids.count() - 1);
+
+    int min = ids.at(0);
+    int max = min;
+    for(int value : ids)
+    {
+        if(value < min)
+            min = value;
+
+        if(value > max)
+            max = value;
+    }
+    setMaxMin(ui->id_spin, min, max);
+}
+
 void MainWindow::changePatient(int patientID)
 {
     if(patients_.count() > 0)
     {
-        //FIXME for Dima
-        // This is costyl. Change your own id with id from DB
-        PatientInfo& pi = patients_[patients_.keys().at(patientID)];
-
+        PatientInfo& pi = patients_[patientID];
+        ui->currentPatient_sb->setValue(getIndexByID(patientID));
         ui->id_spin->setValue(patientID);
         ui->medicalHistory_le->setText(pi.historyNum());
         ui->age_spin->setValue(pi.age());
         ui->failDate_spin->setValue(pi.dateOfFallIll());
-        if(QString(pi.sex()) == "F")
-            ui->sexF_radio->setChecked(true);
-        else if(QString(pi.sex()) == "M")
-            ui->sexM_radio->setChecked(true);
-        else
-        {
-            ui->sexF_radio->setChecked(false);
-            ui->sexM_radio->setChecked(false);
-        }
+        setSexRBs(QString(pi.sex()));
         QStringList images = pi.getImages().keys();
-//        QStringList imgList;
-//        for (ImageInfo i: images)
-//        {
-//            imgList.push_back(i.path());
-//        }
 
         if(!pi.getIsDownloadedFromDb())
-            /*pi =*/ db_.updatePatientInfoById(patients_.keys().at(patientID), pi);
+            db_.updatePatientInfoById(patientID, pi);
 
 
         //FIXME for Dima. Some example of using new PatientInfo
 
-        qDebug() << pi.getImages().keys()[0];
+//        qDebug() << pi.getImages().keys()[0];
 
-        qDebug() << "All features: " << (pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"]).keys();
+//        qDebug() << "All features: " << (pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"]).keys();
 
-        QVector<QPair<QString, QString>> features = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].features();
-        QVector<GraphicsObject> obj = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].objs();
+//        QVector<QPair<QString, QString>> features = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].features();
+//        QVector<GraphicsObject> obj = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].objs();
 
-        qDebug() << "All features" << features;
+//        qDebug() << "All features" << features;
 
         emit imgNamesListChanged(images);
     }
 }
 
-void MainWindow::readCSVFile(QString path)
+void MainWindow::setMaxMin(QSpinBox *sb, int min, int max)
 {
-    QFile csvFIle(path);
+    sb->setMinimum(min);
+    sb->setMaximum(max);
+}
 
-    //QVector<ImgGraphicsObject*> objVector;
-    if( !csvFIle.open(QFile::ReadOnly | QFile::Text) )
+void MainWindow::setSexRBs(const QString &sexStr)
+{
+    if(sexStr == SEX_F)
     {
-        qDebug() << "CSV file not exist";
+        ui->sexF_radio->setChecked(true);
+        ui->sexM_radio->setChecked(false);
+    }
+    else if(sexStr == SEX_M)
+    {
+        ui->sexF_radio->setChecked(false);
+        ui->sexM_radio->setChecked(true);
     }
     else
     {
-        QTextStream in(&csvFIle);
-        while (!in.atEnd())
-        {
-            QString line = in.readLine();
-            QStringList l = line.split('\t');
-            if(l.count() >=5)
-            {
-                GraphicsObject* go = new GraphicsObject(l);
-//                qDebug() << go;
-                grObjectsVector_.push_back(go);
-            }
-            else
-                continue;
-        }
-//        qDebug() << grObjectsVector_.count();
+        ui->sexF_radio->setChecked(false);
+        ui->sexM_radio->setChecked(false);
     }
-}
-
-void MainWindow::setModelHeaders(QStandardItemModel *model, QStringList headers)
-{
-    for(int i = 0; i < headers.count(); i++)
-        model->setHorizontalHeaderItem(i, new QStandardItem(headers.at(i)));
 }
 
 void MainWindow::setPatients(const QMap<int, PatientInfo> &patients)
@@ -173,24 +169,26 @@ void MainWindow::setPatients(const QMap<int, PatientInfo> &patients)
 
 void MainWindow::on_nextpatient_action_triggered()
 {
-    ui->id_spin->setValue( ui->id_spin->value() + 1);
-    changePatient(ui->id_spin->value());
+    int nextIndexID = ui->currentPatient_sb->value() + 1;
+    if(nextIndexID <= ui->totalPatients_sb->value())
+        changePatient(getIDByIndex(nextIndexID));
 }
 
 void MainWindow::on_previouspatient_action_triggered()
 {
-    ui->id_spin->setValue( ui->id_spin->value() - 1);
-    changePatient(ui->id_spin->value());
+    int previousIndexID = ui->currentPatient_sb->value() - 1;
+    if(previousIndexID >= 0)
+        changePatient(getIDByIndex(previousIndexID));
 }
 
 void MainWindow::on_lastPatient_action_triggered()
 {
-    changePatient(patients_.size()-1);
+    changePatient(getIDByIndex(ui->totalPatients_sb->value()));
 }
 
 void MainWindow::on_firstPatient_action_triggered()
 {
-    changePatient(0);
+    changePatient(getIDByIndex(0));
 }
 
 void MainWindow::on_quit_action_triggered()
@@ -207,11 +205,6 @@ void MainWindow::on_github_action_triggered()
 void MainWindow::on_fullscreen_action_triggered()
 {
     ui->img_widget->on_fullscreen_toolbtn_clicked();
-}
-
-void MainWindow::on_disconnect_action_triggered()
-{
-    //TODO
 }
 
 void MainWindow::on_devmanual_action_triggered()
@@ -232,11 +225,6 @@ void MainWindow::on_zoom_in_action_triggered()
 void MainWindow::on_usermanual_action_triggered()
 {
    //TODO open pdf with manual
-}
-
-void MainWindow::on_jumpToPatient_action_triggered()
-{
-    changePatient(ui->jump_sb->value());
 }
 
 void MainWindow::on_microfeatures_treeWidget_itemClicked(QTreeWidgetItem *item, int column)

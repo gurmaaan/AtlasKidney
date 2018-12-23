@@ -48,7 +48,6 @@
     <addaction name="lastPatient_action"/>
     <addaction name="firstPatient_action"/>
     <addaction name="separator"/>
-    <addaction name="disconnect_action"/>
    </widget>
    <widget class="QMenu" name="view_menu">
     <property name="title">
@@ -80,7 +79,7 @@
    <property name="minimumSize">
     <size>
      <width>295</width>
-     <height>282</height>
+     <height>291</height>
     </size>
    </property>
    <property name="features">
@@ -97,6 +96,69 @@
    </attribute>
    <widget class="QWidget" name="patientContent_dock">
     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="currentPatient_lbl">
+         <property name="text">
+          <string>Пациент</string>
+         </property>
+         <property name="buddy">
+          <cstring>currentPatient_sb</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="currentPatient_sb">
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::NoButtons</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="totalPatients_lbl">
+         <property name="text">
+          <string>/</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>totalPatients_sb</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="totalPatients_sb">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::NoButtons</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
@@ -149,6 +211,9 @@
             <property name="text">
              <string>id</string>
             </property>
+            <property name="buddy">
+             <cstring>id_spin</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -166,6 +231,9 @@
             <property name="text">
              <string>История болезни</string>
             </property>
+            <property name="buddy">
+             <cstring>medicalHistory_le</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -175,6 +243,9 @@
            <widget class="QLabel" name="sex_label">
             <property name="text">
              <string>Пол</string>
+            </property>
+            <property name="buddy">
+             <cstring>sexM_radio</cstring>
             </property>
            </widget>
           </item>
@@ -213,6 +284,9 @@
             <property name="text">
              <string>Возраст</string>
             </property>
+            <property name="buddy">
+             <cstring>age_spin</cstring>
+            </property>
            </widget>
           </item>
           <item row="3" column="1">
@@ -229,6 +303,9 @@
            <widget class="QLabel" name="failDate_lbl">
             <property name="text">
              <string>Год заболевания</string>
+            </property>
+            <property name="buddy">
+             <cstring>failDate_spin</cstring>
             </property>
            </widget>
           </item>
@@ -285,42 +362,6 @@
         </layout>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="jumpToPatient_gb">
-       <property name="title">
-        <string>Переход к пациенту </string>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="jumpID_label">
-          <property name="text">
-           <string>id</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="jump_sb">
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximum">
-           <number>10000</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="jump_btn">
-          <property name="text">
-           <string>-&gt;</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
      </item>
     </layout>
    </widget>
@@ -450,21 +491,6 @@
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="disconnect_action">
-   <property name="icon">
-    <iconset resource="../resource.qrc">
-     <normaloff>:/icons/icons/delete_param_ic.png</normaloff>:/icons/icons/delete_param_ic.png</iconset>
-   </property>
-   <property name="text">
-    <string>Отключить БД</string>
-   </property>
-   <property name="toolTip">
-    <string>Разорвать соединение с базой MySQL</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
-   </property>
-  </action>
   <action name="fullscreen_action">
    <property name="icon">
     <iconset resource="../resource.qrc">
@@ -489,7 +515,7 @@
     <string>Выбор следующего пациента</string>
    </property>
    <property name="shortcut">
-    <string>PgUp</string>
+    <string>Right</string>
    </property>
   </action>
   <action name="previouspatient_action">
@@ -504,7 +530,7 @@
     <string>Предыдущий пациент</string>
    </property>
    <property name="shortcut">
-    <string>PgDown</string>
+    <string>Left</string>
    </property>
   </action>
   <action name="lastPatient_action">
@@ -534,7 +560,7 @@
     <string>Переход к первому пациенту</string>
    </property>
    <property name="shortcut">
-    <string>Home</string>
+    <string>End</string>
    </property>
   </action>
   <action name="enableFeaturesSigns_action">
@@ -638,22 +664,6 @@
     <hint type="sourcelabel">
      <x>286</x>
      <y>98</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>jump_btn</sender>
-   <signal>clicked()</signal>
-   <receiver>zoom_in_action</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>315</x>
-     <y>372</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

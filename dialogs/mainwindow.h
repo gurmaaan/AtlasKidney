@@ -8,6 +8,7 @@
 #include <QTreeWidgetItem>
 #include <QListView>
 #include <QDesktopServices>
+#include <QSpinBox>
 #include <type_traits>
 
 #include <dialogs/authdialog.h>
@@ -28,13 +29,13 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void setPatients(const QMap<int, PatientInfo> &patients);
+    void setPatientIDs(const QMap<int, PatientInfo> &patients);
 
 signals:
     void imgNamesListChanged(QStringList &imgNames);
     void treeModelChanged(QStandardItemModel* newModel);
 
 public slots:
-    void enableMainWindow(bool authStatus);
     void authAccepted();
 
 private slots:
@@ -45,13 +46,10 @@ private slots:
     void on_quit_action_triggered();
     void on_github_action_triggered();
     void on_fullscreen_action_triggered();
-    void on_disconnect_action_triggered();
     void on_devmanual_action_triggered();
     void on_zoom_out_action_triggered();
     void on_zoom_in_action_triggered();
     void on_usermanual_action_triggered();
-    void on_jumpToPatient_action_triggered();
-
     void on_microfeatures_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
 private:
@@ -59,11 +57,16 @@ private:
     AuthDialog *authDialog_;
     void connectAll();
     DbConnector db_;
+
     QMap<int, PatientInfo> patients_;
+    QVector<int> patientIDs_;
+    int getIDByIndex(int index);
+    int getIndexByID(int id);
     void changePatient(int patientID);
     QVector<GraphicsObject*> grObjectsVector_;
-    void readCSVFile(QString path);
-    void setModelHeaders(QStandardItemModel *model, QStringList headers);
+
+    void setMaxMin(QSpinBox *sb, int min = 0, int max = 0);
+    void setSexRBs(const QString &sexStr);
 };
 
 #endif // MAINWINDOW_H
