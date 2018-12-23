@@ -55,18 +55,20 @@ private slots:
 private:
     Ui::MainWindow *ui;
     AuthDialog *authDialog_;
-    void connectAll();
     DbConnector db_;
 
     QMap<int, PatientInfo> patients_;
     QVector<int> patientIDs_;
+
     int getIDByIndex(int index);
     int getIndexByID(int id);
     void changePatient(int patientID);
-    QVector<GraphicsObject*> grObjectsVector_;
+
 
     void setMaxMin(QSpinBox *sb, int min = 0, int max = 0);
     void setSexRBs(const QString &sexStr);
+    void connectAll();
+    void setupTreeWidget();
 };
 
 #endif // MAINWINDOW_H

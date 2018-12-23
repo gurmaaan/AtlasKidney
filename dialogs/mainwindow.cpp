@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     authDialog_->show();
 
     connectAll();
-
+    setupTreeWidget();
     //NOTE in reales it shouldn't be
     authDialog_->setPath(QString(IMG_PATH));
 }
@@ -57,6 +57,17 @@ void MainWindow::connectAll()
             ui->img_widget, &ImageWidget::drawSigns);
 }
 
+void MainWindow::setupTreeWidget()
+{
+    QTreeWidget *twg = ui->microF_twg;
+    twg->setHeaderLabels( QStringList() <<"Изображение" << "Микропризнак" << "Описание" );
+    twg->setSortingEnabled(true);
+    int cw = twg->width() / 3;
+    twg->setColumnWidth(0, (cw * 1.25));
+    twg->setColumnWidth(1, cw);
+    twg->setColumnWidth(2, cw);
+}
+
 int MainWindow::getIDByIndex(int index)
 {
     int id = 0;
@@ -86,7 +97,6 @@ void MainWindow::setPatientIDs(const QMap<int, PatientInfo> &patients)
         ids.append(k);
 
     patientIDs_ = ids;
-    qDebug() << patientIDs_;
 
     setMaxMin(ui->currentPatient_sb, 0, ids.count() - 1);
     setMaxMin(ui->totalPatients_sb, 0, ids.count() - 1);
@@ -110,30 +120,60 @@ void MainWindow::changePatient(int patientID)
     if(patients_.count() > 0)
     {
         PatientInfo& pi = patients_[patientID];
+        if(!pi.getIsDownloadedFromDb())
+            db_.updatePatientInfoById(patientID, pi);
         ui->currentPatient_sb->setValue(getIndexByID(patientID));
         ui->id_spin->setValue(patientID);
         ui->medicalHistory_le->setText(pi.historyNum());
         ui->age_spin->setValue(pi.age());
         ui->failDate_spin->setValue(pi.dateOfFallIll());
+
         setSexRBs(QString(pi.sex()));
-        QStringList images = pi.getImages().keys();
 
-        if(!pi.getIsDownloadedFromDb())
-            db_.updatePatientInfoById(patientID, pi);
+        QMap<QString, QMap<int, Feature>> images = pi.getImages();
+        QStringList imgNamesStrList = images.keys();
+        ui->imgCnt_sb->setValue(imgNamesStrList.count());
+        emit imgNamesListChanged(imgNamesStrList);
+        
+        QTreeWidget *twg = ui->microF_twg;
+        twg->clear();
+        for(int i = 0; i < imgNamesStrList.count(); i++)
+        {
+            QTreeWidgetItem *imgItem = new QTreeWidgetItem(twg);
+            imgItem->setText( 0, "Изображение " + QString::number(i+1) );
+            QString imgNameAtI = imgNamesStrList.at(i);
+            imgItem->setStatusTip( 0, imgNameAtI );
+            imgItem->setWhatsThis( 0, imgNameAtI );
 
+            QMap<int, Feature> imgMasks = images[imgNameAtI];
+            qDebug() << imgNameAtI << " : " << images[imgNameAtI].keys();
+            if(imgMasks.keys().count() > 0)
+            {
+                for(int maskID : imgMasks.keys())
+                {
+                    QTreeWidgetItem *imgMaskItem = new QTreeWidgetItem(imgItem);
+                    imgMaskItem->setText(0, "Маска " + QString::number(maskID));
+                    QVector< QPair<QString, QString> > features = imgMasks[maskID].features();
+                    QVector< GraphicsObject > grObjs = imgMasks[maskID].objs();
+                    if( !grObjs.empty() )
+                    {
+                        qDebug() << "\tObjects exists";
+                        imgMaskItem->setCheckState(0, Qt::Unchecked);
+                    }
+                    if( !features.empty() )
+                    {
+                        for(QPair<QString,QString> f : features)
+                        {
+                            QTreeWidgetItem *featureItem = new QTreeWidgetItem(imgMaskItem);
+                            featureItem->setText(1, f.first);
+                            featureItem->setText(2, f.second);
+                        }
+                    }
 
-        //FIXME for Dima. Some example of using new PatientInfo
-
-//        qDebug() << pi.getImages().keys()[0];
-
-//        qDebug() << "All features: " << (pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"]).keys();
-
-//        QVector<QPair<QString, QString>> features = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].features();
-//        QVector<GraphicsObject> obj = pi.getImages()["{7f34ce5b-796f-42b0-8408-e801f4bb88a4}.jpg"][1817].objs();
-
-//        qDebug() << "All features" << features;
-
-        emit imgNamesListChanged(images);
+                }
+            }
+        }
+        twg->sortByColumn(0, Qt::AscendingOrder);
     }
 }
 
