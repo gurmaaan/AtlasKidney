@@ -68,11 +68,10 @@ void MainWindow::connectAll()
 {
     connect(authDialog_, &AuthDialog::accepted,
             this, &MainWindow::authAccepted);
-
     connect(authDialog_, &AuthDialog::basePathChanged,
             ui->img_widget, &ImageWidget::setBasePath);
-    connect(this, &MainWindow::imgNamesListChanged,
-            ui->img_widget, &ImageWidget::setImgNames);
+    connect(ui->img_widget, &ImageWidget::frontImgIndexChenged,
+            ui->img_widget, &ImageWidget::setFrontImage);
 
     connect(ui->img_widget, &ImageWidget::selectedIndexChanged,
             this, &MainWindow::selectedImageIndexChanged);
@@ -142,6 +141,7 @@ void MainWindow::changePatient(int patientID)
         PatientInfo& pi = patients_[patientID];
         if(!pi.getIsDownloadedFromDb())
             db_.updatePatientInfoById(patientID, pi);
+        ui->img_widget->setPatientInfo(pi);
         ui->currentPatient_sb->setValue(getIndexByID(patientID));
         ui->id_spin->setValue(patientID);
         ui->medicalHistory_le->setText(pi.historyNum());
@@ -153,48 +153,49 @@ void MainWindow::changePatient(int patientID)
         QMap<QString, QMap<int, Feature>> images = pi.getImages();
         QStringList imgNamesStrList = images.keys();
         ui->imgCnt_sb->setValue(imgNamesStrList.count());
-        emit imgNamesListChanged(imgNamesStrList);
         
         twg_->clear();
         for(int i = 0; i < imgNamesStrList.count(); i++)
         {
-            QTreeWidgetItem *imgItem = new QTreeWidgetItem(twg_);
-            imgItem->setText( 0, "Изображение " + QString::number(i+1) );
             QString imgNameAtI = imgNamesStrList.at(i);
-            imgItem->setStatusTip( 0, imgNameAtI );
-            imgItem->setWhatsThis( 0, imgNameAtI );
+            QTreeWidgetItem *imgItem = createImgItem(twg_, i, imgNameAtI);
 
             QMap<int, Feature> imgMasks = images[imgNameAtI];
             if(imgMasks.keys().count() > 0)
             {
                 for(int maskID : imgMasks.keys())
-                {
-                    QTreeWidgetItem *imgMaskItem = new QTreeWidgetItem(imgItem);
-                    imgMaskItem->setText(0, "Маска " + QString::number(maskID));
-                    QVector< QPair<QString, QString> > features = imgMasks[maskID].features();
-                    QVector< GraphicsObject > grObjs = imgMasks[maskID].objs();
-                    if( !grObjs.empty() )
-                    {
-                        qDebug() << "Not empty: " << patientID << maskID << imgNameAtI;
-                        imgMaskItem->setCheckState(0, Qt::Unchecked);
-                        for(GraphicsObject go : grObjs)
-                        {
-                        }
-                    }
-                    if( !features.empty() )
-                    {
-                        for(QPair<QString,QString> f : features)
-                        {
-                            QTreeWidgetItem *featureItem = new QTreeWidgetItem(imgMaskItem);
-                            featureItem->setText(1, f.first);
-                            featureItem->setText(2, f.second);
-                        }
-                    }
-
-                }
+                    createMaskItem(imgItem, imgMasks, maskID);
             }
         }
         twg_->sortByColumn(0, Qt::AscendingOrder);
+    }
+}
+
+QTreeWidgetItem* MainWindow::createImgItem(QTreeWidget *root, int i, QString realName)
+{
+    QTreeWidgetItem *imgItem = new QTreeWidgetItem(root);
+    imgItem->setText( 0, "Изображение " + QString::number(i+1) );
+    imgItem->setStatusTip( 0, realName );
+    imgItem->setWhatsThis( 0, realName );
+    return imgItem;
+}
+
+void MainWindow::createMaskItem(QTreeWidgetItem *imgItem, QMap<int, Feature> masks, int maskID)
+{
+    QTreeWidgetItem *imgMaskItem = new QTreeWidgetItem(imgItem);
+    imgMaskItem->setText(0, "Маска " + QString::number(maskID));
+    QVector< QPair<QString, QString> > features = masks[maskID].features();
+    QVector< GraphicsObject > grObjs = masks[maskID].objs();
+    if( !grObjs.empty() )
+        imgMaskItem->setCheckState(0, Qt::Unchecked);
+    if( !features.empty() )
+    {
+        for(QPair<QString,QString> f : features)
+        {
+            QTreeWidgetItem *featureItem = new QTreeWidgetItem(imgMaskItem);
+            featureItem->setText(1, f.first);
+            featureItem->setText(2, f.second);
+        }
     }
 }
 
@@ -288,10 +289,6 @@ void MainWindow::on_usermanual_action_triggered()
    //TODO open pdf with manual
 }
 
-void MainWindow::on_microF_twg_itemClicked(QTreeWidgetItem *item, int column)
-{
-}
-
 QVector<GraphicsObject> MainWindow::getPatientsGrObjVector(int pID, QString imageName, int maskID)
 {
     PatientInfo pi = patients_[pID];
@@ -302,7 +299,21 @@ QVector<GraphicsObject> MainWindow::getPatientsGrObjVector(int pID, QString imag
 
 void MainWindow::on_microF_twg_itemChanged(QTreeWidgetItem *item, int column)
 {
+    if(item->checkState(column) == Qt::Checked)
+    {
+        QTreeWidgetItem *parIt = item->parent();
+        int maskID = item->text(column).split(" ").last().toInt();
+        QString imageName = parIt->statusTip(column);
+        QString itemTxt = item->text(column);
 
+        for(int i = 0; i < parIt->childCount(); i++)
+        {
+            if(parIt->child(i)->text(column) != itemTxt)
+                parIt->child(i)->setCheckState(column, Qt::Unchecked);
+        }
+
+        ui->img_widget->setVisible(imageName, maskID, true);
+    }
 }
 
 void MainWindow::on_collapseAll_btn_clicked()

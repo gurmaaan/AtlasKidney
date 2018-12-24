@@ -139,6 +139,7 @@ void GraphicsObject::calcGraphicsObject()
 QGraphicsItemGroup *GraphicsObject::genGrIGr(QPointF tlp, QPointF brp)
 {
     QGraphicsItemGroup *gr = new QGraphicsItemGroup;
+    QPen pen = QPen(QColor(Qt::red), 3, Qt::SolidLine, Qt::RoundCap);
 
     QRectF rect(tlp, brp);
     switch (this->type())
@@ -152,12 +153,14 @@ QGraphicsItemGroup *GraphicsObject::genGrIGr(QPointF tlp, QPointF brp)
         case Sign::Ellipse:
         {
             QGraphicsEllipseItem *ellipseItem = new QGraphicsEllipseItem(rect);
+            ellipseItem->setPen(pen);
             gr->addToGroup(ellipseItem);
         }
             break;
         case Sign::Square:
         {
             QGraphicsRectItem *rectItem = new QGraphicsRectItem(rect);
+            rectItem->setPen(pen);
             gr->addToGroup(rectItem);
         }
             break;
@@ -175,7 +178,7 @@ QGraphicsItemGroup *GraphicsObject::genGrIGr(QPointF tlp, QPointF brp)
 QGraphicsItemGroup *GraphicsObject::genArrow(QPointF ap, QPointF bp, qreal angleSizeK)
 {
     QGraphicsItemGroup *arrowGroup = new QGraphicsItemGroup;
-    QPen pen = QPen(QColor(Qt::red), 1, Qt::SolidLine, Qt::RoundCap);
+    QPen pen = QPen(QColor(Qt::red), 3, Qt::SolidLine, Qt::RoundCap);
 
     qreal xa = ap.rx();
     qreal xb = bp.rx();

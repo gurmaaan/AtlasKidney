@@ -22,9 +22,11 @@ ImageWidget::~ImageWidget()
 void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPathes)
 {
     previewModel_->clear();
+
     QList<QStandardItem*> previewRow;
     QList<QStandardItem*> imgNameRow;
     QVector<QPixmap> imgVector;
+
     for (int i = 0; i < imagesLocalPathes.size(); i++)
     {
         QString imgName = imagesLocalPathes.at(i);
@@ -36,7 +38,7 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
         if(fileExists(fullPath))
         {
             item->setIcon(pixMapAtI);
-            item->setStatusTip(imgName);
+            setWhatsStatus(item, imgName);
         }
         else
         {            
@@ -44,15 +46,14 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
             item->setIcon(QIcon(nullPixmap));
         }
         previewRow.append(item);
+
         QStandardItem* nameItem = new QStandardItem("Изображение " + QString::number(i+1));
-        nameItem->setStatusTip(imgName);
-        nameItem->setWhatsThis(imgName);
-        nameItem->setTextAlignment(Qt::AlignCenter);
+        setWhatsStatus(nameItem, imgName);
         imgNameRow.append(nameItem);
     }
 
     setImages(imgVector);
-    setFrontImage(imgVector.at(0));
+    setFrontImgIndex(0);
 
     previewModel_->appendRow(previewRow);
     previewModel_->appendRow(imgNameRow);
@@ -83,6 +84,13 @@ QSize ImageWidget::scaledSize(int k)
     return QSize(W, H);
 }
 
+void ImageWidget::setWhatsStatus(QStandardItem *item, QString text)
+{
+    item->setWhatsThis(text);
+    item->setStatusTip(text);
+    item->setTextAlignment(Qt::AlignCenter);
+}
+
 QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
 {
     QPixmap pixmap(size);
@@ -100,12 +108,6 @@ QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
     return pixmap;
 }
 
-void ImageWidget::setImgNames(const QStringList &imgNames)
-{
-    imgNames_ = imgNames;
-    loadImages(basePath_, imgNames_);
-}
-
 void ImageWidget::scaleImage(int k)
 {
     scene_->clear();
@@ -115,8 +117,6 @@ void ImageWidget::scaleImage(int k)
         ui->main_photo_gv->fitInView(item, Qt::KeepAspectRatio);
     else
         item->setPos(0, 0);
-    ui->main_photo_gv->show();
-
 }
 
 void ImageWidget::setBasePath(const QString &basePath)
@@ -129,11 +129,44 @@ void ImageWidget::setImages(const QVector<QPixmap> &value)
     images_ = value;
 }
 
-void ImageWidget::setFrontImage(const QPixmap &value)
+void ImageWidget::setFrontImage(int findex)
 {
-    frontImage_ = value;
+    QPixmap fImage = images_.at(findex);
+    frontImage_ = fImage;
+    scene_->clear();
+    QGraphicsPixmapItem *pmI = new QGraphicsPixmapItem(frontImage_.scaled(scaledSize(0), Qt::KeepAspectRatio));
+    scene_->addItem(pmI);
+}
 
-    scaleImage(0);
+void ImageWidget::setVisible(QString imgName, int maskID, bool state)
+{
+    scene_->clear();
+
+    QMap<QString, QMap<int, Feature>> images = pi_.getImages();
+    int activeIndex = 0;
+    for(int i = 0; i < images.keys().count(); i++)
+    {
+        if(images.keys().at(i) == imgName)
+        {
+            activeIndex = i;
+            break;
+        }
+
+    }
+
+    frontImage_ = images_.at(activeIndex);
+    QGraphicsPixmapItem *pmI = new QGraphicsPixmapItem(frontImage_.scaled(scaledSize(0), Qt::KeepAspectRatio));
+    scene_->addItem(pmI);
+
+    if(state)
+    {
+        QVector<GraphicsObject> grObjcts = images[imgName][maskID].objs();
+        for(GraphicsObject g : grObjcts)
+        {
+            QGraphicsItemGroup *group = g.genGrIGr(g.startPoint(), g.endPoint());
+            scene_->addItem(group);
+        }
+    }
 }
 
 void ImageWidget::on_fullscreen_toolbtn_clicked()
@@ -158,7 +191,7 @@ void ImageWidget::on_fullscreen_toolbtn_clicked()
 
 void ImageWidget::on_preview_table_clicked(const QModelIndex &index)
 {
-    setFrontImage(images_.at(index.column()));
+    setFrontImage(index.column());
     emit selectedIndexChanged(index.column());
 }
 
@@ -182,8 +215,25 @@ void ImageWidget::on_zoom_v_slider_sliderMoved(int position)
     scaleImage(k_);
 }
 
+PatientInfo ImageWidget::patientInfo() const
+{
+    return pi_;
+}
+
+int ImageWidget::frontImgIndex() const
+{
+    return frontImgIndex_;
+}
+
+void ImageWidget::setFrontImgIndex(int frontImgIndex)
+{
+    frontImgIndex_ = frontImgIndex;
+    emit frontImgIndexChenged(frontImgIndex);
+}
+
 void ImageWidget::setPatientInfo(const PatientInfo &pi)
 {
     pi_ = pi;
-
+    imgNames_ = pi.getImages().keys();
+    loadImages(basePath_, imgNames_);
 }

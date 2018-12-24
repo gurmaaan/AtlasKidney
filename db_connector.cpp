@@ -198,3 +198,13 @@ QVector<GraphicsObject> Feature::objs() const
 {
     return objs_;
 }
+
+bool Feature::visible() const
+{
+    return visible_;
+}
+
+void Feature::setVisible(bool visible)
+{
+    visible_ = visible;
+}

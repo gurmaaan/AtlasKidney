@@ -21,6 +21,8 @@ public:
     GraphicsObject(QStringList csvRow);
     GraphicsObject(const GraphicsObject &g);
     GraphicsObject() {}
+    QGraphicsItemGroup *genGrIGr(QPointF tlp, QPointF brp);
+    QGraphicsItemGroup *genArrow(QPointF ap, QPointF bp, qreal angleSizeK);
 
     QString imgName() const;
     void setImgName(const QString &imgName);
@@ -54,8 +56,6 @@ private:
     QPointF startPoint_;
     QPointF endPoint_;
     QGraphicsItemGroup *group_;
-    QGraphicsItemGroup *genGrIGr(QPointF tlp, QPointF brp);
-    QGraphicsItemGroup *genArrow(QPointF ap, QPointF bp, qreal angleSizeK);
 
     static Sign detectSign(QString signStr);
     static QPointF detectPoint(QString pointStr);

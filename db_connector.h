@@ -17,9 +17,13 @@ public:
     QVector<QPair<QString, QString> > features() const;
     QVector<GraphicsObject> objs() const;
 
+    bool visible() const;
+    void setVisible(bool visible);
+
 private:
     QVector<QPair<QString, QString>> features_;
     QVector<GraphicsObject> objs_;
+    bool visible_;
 };
 
 class PatientInfo
