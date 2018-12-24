@@ -33,10 +33,10 @@ public:
 
 signals:
     void imgNamesListChanged(QStringList &imgNames);
-    void treeModelChanged(QStandardItemModel* newModel);
 
 public slots:
     void authAccepted();
+    void selectedImageIndexChanged(int index);
 
 private slots:
     void on_nextpatient_action_triggered();
@@ -50,20 +50,28 @@ private slots:
     void on_zoom_out_action_triggered();
     void on_zoom_in_action_triggered();
     void on_usermanual_action_triggered();
-    void on_microfeatures_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
+
+    void on_microF_twg_itemClicked(QTreeWidgetItem *item, int column);
+
+    void on_microF_twg_itemChanged(QTreeWidgetItem *item, int column);
+
+    void on_collapseAll_btn_clicked();
+
+    void on_expandAll_btn_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QTreeWidget *twg_;
     AuthDialog *authDialog_;
     DbConnector db_;
 
     QMap<int, PatientInfo> patients_;
     QVector<int> patientIDs_;
+    QVector<GraphicsObject> getPatientsGrObjVector(int pID, QString imageName, int maskID);
 
     int getIDByIndex(int index);
     int getIndexByID(int id);
     void changePatient(int patientID);
-
 
     void setMaxMin(QSpinBox *sb, int min = 0, int max = 0);
     void setSexRBs(const QString &sexStr);

@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     authDialog_ = new AuthDialog(db_);
     authDialog_->show();
 
+    twg_ = ui->microF_twg;
     connectAll();
     setupTreeWidget();
     //NOTE in reales it shouldn't be
@@ -45,27 +46,46 @@ void MainWindow::authAccepted()
     }
 }
 
+void MainWindow::selectedImageIndexChanged(int index)
+{
+    twg_->collapseAll();
+    QString selectedItemText = "Изображение " + QString::number(index + 1);
+    QTreeWidgetItem *indexItem = twg_->topLevelItem(index);
+    if(indexItem->text(0) == selectedItemText)
+        indexItem->setExpanded(true);
+    else
+    {
+        for(int i = 0; i < twg_->topLevelItemCount(); i++)
+        {
+            QTreeWidgetItem *itemAtI = twg_->topLevelItem(i);
+            if(itemAtI->text(0) == selectedItemText)
+                itemAtI->setExpanded(true);
+        }
+    }
+}
+
 void MainWindow::connectAll()
 {
     connect(authDialog_, &AuthDialog::accepted,
             this, &MainWindow::authAccepted);
+
     connect(authDialog_, &AuthDialog::basePathChanged,
             ui->img_widget, &ImageWidget::setBasePath);
     connect(this, &MainWindow::imgNamesListChanged,
             ui->img_widget, &ImageWidget::setImgNames);
-    connect(ui->enableFeaturesSigns_action, &QAction::toggled,
-            ui->img_widget, &ImageWidget::drawSigns);
+
+    connect(ui->img_widget, &ImageWidget::selectedIndexChanged,
+            this, &MainWindow::selectedImageIndexChanged);
 }
 
 void MainWindow::setupTreeWidget()
 {
-    QTreeWidget *twg = ui->microF_twg;
-    twg->setHeaderLabels( QStringList() <<"Изображение" << "Микропризнак" << "Описание" );
-    twg->setSortingEnabled(true);
-    int cw = twg->width() / 3;
-    twg->setColumnWidth(0, (cw * 1.25));
-    twg->setColumnWidth(1, cw);
-    twg->setColumnWidth(2, cw);
+    twg_->setHeaderLabels( QStringList() <<"Изображение" << "Микропризнак" << "Описание" );
+    twg_->setSortingEnabled(true);
+    int cw = twg_->width() / 3;
+    twg_->setColumnWidth(0, (cw * 1.25));
+    twg_->setColumnWidth(1, cw);
+    twg_->setColumnWidth(2, cw);
 }
 
 int MainWindow::getIDByIndex(int index)
@@ -135,18 +155,16 @@ void MainWindow::changePatient(int patientID)
         ui->imgCnt_sb->setValue(imgNamesStrList.count());
         emit imgNamesListChanged(imgNamesStrList);
         
-        QTreeWidget *twg = ui->microF_twg;
-        twg->clear();
+        twg_->clear();
         for(int i = 0; i < imgNamesStrList.count(); i++)
         {
-            QTreeWidgetItem *imgItem = new QTreeWidgetItem(twg);
+            QTreeWidgetItem *imgItem = new QTreeWidgetItem(twg_);
             imgItem->setText( 0, "Изображение " + QString::number(i+1) );
             QString imgNameAtI = imgNamesStrList.at(i);
             imgItem->setStatusTip( 0, imgNameAtI );
             imgItem->setWhatsThis( 0, imgNameAtI );
 
             QMap<int, Feature> imgMasks = images[imgNameAtI];
-            qDebug() << imgNameAtI << " : " << images[imgNameAtI].keys();
             if(imgMasks.keys().count() > 0)
             {
                 for(int maskID : imgMasks.keys())
@@ -157,8 +175,11 @@ void MainWindow::changePatient(int patientID)
                     QVector< GraphicsObject > grObjs = imgMasks[maskID].objs();
                     if( !grObjs.empty() )
                     {
-                        qDebug() << "\tObjects exists";
+                        qDebug() << "Not empty: " << patientID << maskID << imgNameAtI;
                         imgMaskItem->setCheckState(0, Qt::Unchecked);
+                        for(GraphicsObject go : grObjs)
+                        {
+                        }
                     }
                     if( !features.empty() )
                     {
@@ -173,7 +194,7 @@ void MainWindow::changePatient(int patientID)
                 }
             }
         }
-        twg->sortByColumn(0, Qt::AscendingOrder);
+        twg_->sortByColumn(0, Qt::AscendingOrder);
     }
 }
 
@@ -267,7 +288,29 @@ void MainWindow::on_usermanual_action_triggered()
    //TODO open pdf with manual
 }
 
-void MainWindow::on_microfeatures_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+void MainWindow::on_microF_twg_itemClicked(QTreeWidgetItem *item, int column)
+{
+}
+
+QVector<GraphicsObject> MainWindow::getPatientsGrObjVector(int pID, QString imageName, int maskID)
+{
+    PatientInfo pi = patients_[pID];
+    QMap<int, Feature> imgMasks = pi.getImages()[imageName];
+    QVector< GraphicsObject > grObjs = imgMasks[maskID].objs();
+    return grObjs;
+}
+
+void MainWindow::on_microF_twg_itemChanged(QTreeWidgetItem *item, int column)
 {
 
+}
+
+void MainWindow::on_collapseAll_btn_clicked()
+{
+    twg_->collapseAll();
+}
+
+void MainWindow::on_expandAll_btn_clicked()
+{
+    twg_->expandAll();
 }

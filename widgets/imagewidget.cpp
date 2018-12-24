@@ -36,18 +36,18 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
         if(fileExists(fullPath))
         {
             item->setIcon(pixMapAtI);
+            item->setStatusTip(imgName);
         }
         else
         {            
-            QString errorMsg = imagesLocalPathes.at(i) + "\n" + "doesn't exist";
-            qDebug() << errorMsg << endl << fullPath << endl;
-            QPixmap nullPixmap = createPixmapWithtext(errorMsg);
+            QPixmap nullPixmap = createPixmapWithtext(imgName);
             item->setIcon(QIcon(nullPixmap));
         }
         previewRow.append(item);
-        QStandardItem* nameItem = new QStandardItem(imgName);
+        QStandardItem* nameItem = new QStandardItem("Изображение " + QString::number(i+1));
         nameItem->setStatusTip(imgName);
         nameItem->setWhatsThis(imgName);
+        nameItem->setTextAlignment(Qt::AlignCenter);
         imgNameRow.append(nameItem);
     }
 
@@ -57,7 +57,7 @@ void ImageWidget::loadImages(QString baseAbsolutePath, QStringList imagesLocalPa
     previewModel_->appendRow(previewRow);
     previewModel_->appendRow(imgNameRow);
     ui->preview_table->setRowHeight(0,100);
-    ui->preview_table->setCurrentIndex( ui->preview_table->model()->index(0,0));
+    ui->preview_table->selectColumn(0);
 }
 
 bool ImageWidget::fileExists(QString path)
@@ -86,21 +86,24 @@ QSize ImageWidget::scaledSize(int k)
 QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
 {
     QPixmap pixmap(size);
+    QString text2 = "doesn't exist";
     pixmap.fill( QColor(PREVIEW_COLOR) );
     QPainter painter( &pixmap );
-    painter.setFont( QFont("Arial") );
-    painter.drawText( QPoint(size.width() / 10, size.height() / 10), text );
+    painter.setFont( QFont("Arial", 7) );
+    QFontMetrics fm = painter.fontMetrics();
+    int x1 = (size.width() - fm.boundingRect(text).width()) / 2;
+    int y1 = (size.height() - (fm.height() * 2.5)) / 2;
+    int x2 = (size.width() - fm.boundingRect(text2).width()) / 2;
+    int y2 = y1 + fm.height()*1.5;
+    painter.drawText(QPoint(x1, y1), text);
+    painter.drawText(QPoint(x2, y2), text2);
     return pixmap;
 }
 
-void ImageWidget::setImgNames(const QStringList &imgNames) {
+void ImageWidget::setImgNames(const QStringList &imgNames)
+{
     imgNames_ = imgNames;
     loadImages(basePath_, imgNames_);
-}
-
-void ImageWidget::drawSigns(bool status)
-{
-//    QGraphicsRectItem* item = new QGraphicsRectItem()
 }
 
 void ImageWidget::scaleImage(int k)
@@ -114,22 +117,6 @@ void ImageWidget::scaleImage(int k)
         item->setPos(0, 0);
     ui->main_photo_gv->show();
 
-}
-
-void ImageWidget::paintSign(QString imageName, GraphicsObject grO)
-{
-    for(int i = 0; i < imgNames_.size(); i++)
-    {
-        if(imageName == imgNames_.at(i))
-        {
-            if(images_.size() == imgNames_.size())
-            {
-                ui->preview_table->selectColumn(i);
-                setFrontImage(images_.at(i));
-                ui->main_photo_gv->scene()->addItem(grO.group());
-            }
-        }
-    }
 }
 
 void ImageWidget::setBasePath(const QString &basePath)
@@ -172,6 +159,7 @@ void ImageWidget::on_fullscreen_toolbtn_clicked()
 void ImageWidget::on_preview_table_clicked(const QModelIndex &index)
 {
     setFrontImage(images_.at(index.column()));
+    emit selectedIndexChanged(index.column());
 }
 
 void ImageWidget::on_plus_toolbtn_clicked()
@@ -192,4 +180,10 @@ void ImageWidget::on_zoom_v_slider_sliderMoved(int position)
 {
     k_ = position;
     scaleImage(k_);
+}
+
+void ImageWidget::setPatientInfo(const PatientInfo &pi)
+{
+    pi_ = pi;
+
 }

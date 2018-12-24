@@ -15,6 +15,7 @@
 #include <QScreen>
 #include <static.h>
 #include <model/graphicsobject.h>
+#include <db_connector.h>
 
 namespace Ui {
 class ImageWidget;
@@ -31,12 +32,11 @@ public:
     void setFrontImage(const QPixmap &value);
     void setImages(const QVector<QPixmap> &value);
     void scaleImage(int k);
-    void paintSign(QString imageName, GraphicsObject grO);
 
 public slots:
     void setBasePath(const QString &basePath);
     void setImgNames(const QStringList &imgNames);
-    void drawSigns(bool status);
+    void setPatientInfo(const PatientInfo &pi);
     void on_plus_toolbtn_clicked();
     void on_minus_toolbtn_clicked();
     void on_fullscreen_toolbtn_clicked();
@@ -45,10 +45,14 @@ private slots:
     void on_preview_table_clicked(const QModelIndex &index);
     void on_zoom_v_slider_sliderMoved(int position);
 
+signals:
+    void selectedIndexChanged(int index);
+
 private:
     Ui::ImageWidget *ui;
     QStandardItemModel *previewModel_;
     QPixmap frontImage_;
+    PatientInfo pi_;
     QVector<QPixmap> images_;
     QString basePath_;
     QStringList imgNames_;

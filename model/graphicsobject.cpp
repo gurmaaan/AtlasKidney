@@ -121,7 +121,7 @@ QString GraphicsObject::printSign(const Sign &s)
     return signStr;
 }
 
-QGraphicsItemGroup *GraphicsObject::group() const
+QGraphicsItemGroup *GraphicsObject::graphicsItem() const
 {
     return group_;
 }
@@ -182,53 +182,49 @@ QGraphicsItemGroup *GraphicsObject::genArrow(QPointF ap, QPointF bp, qreal angle
     qreal ya = ap.ry();
     qreal yb = bp.ry();
 
-    //TODO во всех формулах сделать исключения на нули
     qreal n = yb - ya;
     qreal m = xb - xa;
 
-    qreal len = sqrt( pow( n, 2) + pow(m, 2) );
-
-    qreal t,p;
-    if(len != 0)
+    if( (n != 0) && (m != 0))
     {
-        t = n / len;
-        p = m / len;
+        qreal len = sqrt( pow( n, 2) + pow(m, 2) );
+
+        qreal t = n / len;
+        qreal p = m / len;
+        qreal h = len * angleSizeK;
+
+        qreal xc = xb - (p*h)*( (m-n)/(sqrt(3) * m) );
+        qreal yc = yb - (t*h)*( (sqrt(3)*n + m)/(sqrt(3) * n) );
+
+        qreal xd = xb + (p*h)*( (m*(1 - 2*sqrt(3)) - n)/(sqrt(3) * m) );
+        qreal yd = yb + (t*h)*( (m - sqrt(3)*n)/(sqrt(3)*n) );
+
+        qreal xe = xb - (p*h*0.75);
+        qreal ye = yb - (t*h*0.75);
+
+        QGraphicsLineItem *ab = new QGraphicsLineItem(xa,ya,xb,yb);
+        QGraphicsLineItem *bc = new QGraphicsLineItem(xb,yb,xc,yc);
+        QGraphicsLineItem *bd = new QGraphicsLineItem(xb,yb,xd,yd);
+        QGraphicsLineItem *ec = new QGraphicsLineItem(xe,ye,xc,yc);
+        QGraphicsLineItem *ed = new QGraphicsLineItem(xe,ye,xd,yd);
+
+        ab->setPen(pen);
+        bc->setPen(pen);
+        bd->setPen(pen);
+        ec->setPen(pen);
+        ed->setPen(pen);
+
+        arrowGroup->addToGroup(ab);
+        arrowGroup->addToGroup(bc);
+        arrowGroup->addToGroup(bd);
+        arrowGroup->addToGroup(ec);
+        arrowGroup->addToGroup(ed);
     }
     else
     {
-        t = 0;
-        p = 0;
+        QGraphicsEllipseItem *nullEllipse = new QGraphicsEllipseItem(xa, ya, sqrt((xb-xa)*(xb-xa)), sqrt((yb-ya)*(yb-ya)));
+        arrowGroup->addToGroup(nullEllipse);
     }
-
-    qreal h = len * angleSizeK;
-
-    qreal xc = xb - (p*h)*( (m-n)/(sqrt(3) * m) );
-    qreal yc = yb - (t*h)*( (sqrt(3)*n + m)/(sqrt(3) * n) );
-
-    qreal xd = xb + (p*h)*( (m*(1 - 2*sqrt(3)) - n)/(sqrt(3) * m) );
-    qreal yd = yb + (t*h)*( (m - sqrt(3)*n)/(sqrt(3)*n) );
-
-    qreal xe = xb - (p*h*0.75);
-    qreal ye = yb - (t*h*0.75);
-
-    QGraphicsLineItem *ab = new QGraphicsLineItem(xa,ya,xb,yb);
-    QGraphicsLineItem *bc = new QGraphicsLineItem(xb,yb,xc,yc);
-    QGraphicsLineItem *bd = new QGraphicsLineItem(xb,yb,xd,yd);
-    QGraphicsLineItem *ec = new QGraphicsLineItem(xe,ye,xc,yc);
-    QGraphicsLineItem *ed = new QGraphicsLineItem(xe,ye,xd,yd);
-
-    ab->setPen(pen);
-    bc->setPen(pen);
-    bd->setPen(pen);
-    ec->setPen(pen);
-    ed->setPen(pen);
-
-    arrowGroup->addToGroup(ab);
-    arrowGroup->addToGroup(bc);
-    arrowGroup->addToGroup(bd);
-    arrowGroup->addToGroup(ec);
-    arrowGroup->addToGroup(ed);
-
     return arrowGroup;
 }
 

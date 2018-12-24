@@ -43,8 +43,8 @@ public:
 
     static QString printSign(const Sign &s);
 
-    QGraphicsItemGroup *group() const;
-    void setGroup(QGraphicsItemGroup *group);
+    QGraphicsItemGroup *graphicsItem() const;
+    void setGroup(QGraphicsItemGroup *graphicsItem);
     void calcGraphicsObject();
 
 private:
