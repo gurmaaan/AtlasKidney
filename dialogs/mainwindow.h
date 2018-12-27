@@ -14,7 +14,7 @@
 #include <dialogs/authdialog.h>
 #include <widgets/imagewidget.h>
 #include <static.h>
-#include "db_connector.h"
+#include "databaseservice.h"
 #include "model/graphicsobject.h"
 
 namespace Ui {
@@ -58,7 +58,7 @@ private:
     Ui::MainWindow *ui;
     QTreeWidget *twg_;
     AuthDialog *authDialog_;
-    DbConnector db_;
+    DataBaseService db_;
 
     QMap<int, PatientInfo> patients_;
     QVector<int> patientIDs_;

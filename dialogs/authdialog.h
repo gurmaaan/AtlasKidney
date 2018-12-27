@@ -11,7 +11,7 @@
 #include <QDir>
 //
 #include "static.h"
-#include "db_connector.h"
+#include "databaseservice.h"
 
 
 namespace Ui {
@@ -23,7 +23,7 @@ class AuthDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AuthDialog(DbConnector& db, QWidget *parent = nullptr);
+    explicit AuthDialog(DataBaseService& db, QWidget *parent = nullptr);
     //NOTE in reales it should be in private
     void setPath(QString path);
     ~AuthDialog();
@@ -40,7 +40,7 @@ private:
     bool okOption(QString login, QString password);
     void closeOption();
     void resetOption();
-    DbConnector db;
+    DataBaseService db;
 };
 
 #endif // AUTHDIALOG_H

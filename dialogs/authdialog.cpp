@@ -2,17 +2,16 @@
 #include "ui_authdialog.h"
 
 
-AuthDialog::AuthDialog(DbConnector& db, QWidget *parent) :
+AuthDialog::AuthDialog(DataBaseService& db, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AuthDialog),
     db(db)
 {
     ui->setupUi(this);
-    setWindowTitle(AUTH_DIALOG_TITTLE);
 
     // NOTE credentionals hard coding
-    ui->login_le->setText(LOGIN);
-    ui->password_le->setText(PASSWORD);
+    ui->login_le->setText(USER_LOGIN);
+    ui->password_le->setText(USER_PASSWORD);
 
 }
 

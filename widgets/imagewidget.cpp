@@ -95,7 +95,7 @@ QPixmap ImageWidget::createPixmapWithtext(QString text, QSize size)
 {
     QPixmap pixmap(size);
     QString text2 = "doesn't exist";
-    pixmap.fill( QColor(PREVIEW_COLOR) );
+    pixmap.fill( QColor(Qt::white) );
     QPainter painter( &pixmap );
     painter.setFont( QFont("Arial", 7) );
     QFontMetrics fm = painter.fontMetrics();

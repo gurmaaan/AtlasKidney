@@ -27,24 +27,18 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         dialogs/mainwindow.cpp \
-        db_connector.cpp \
         dialogs/authdialog.cpp \
         widgets/imagewidget.cpp \  
-    model/graphicsobject.cpp
+        model/graphicsobject.cpp \
+        databaseservice.cpp
 
 HEADERS += \
         dialogs/mainwindow.h \
-        static.h \
         dialogs/authdialog.h \
         widgets/imagewidget.h \
-    model/graphicsobject.h
-
-
-HEADERS += \
-        dialogs/mainwindow.h \
-        static.h \
-        db_connector.h \
-        dialogs/authdialog.h
+        model/graphicsobject.h \
+        databaseservice.h \
+        static.h
 
 FORMS += \
         dialogs/mainwindow.ui \

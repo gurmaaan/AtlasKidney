@@ -15,7 +15,7 @@
 #include <QScreen>
 #include <static.h>
 #include <model/graphicsobject.h>
-#include <db_connector.h>
+#include <databaseservice.h>
 
 namespace Ui {
 class ImageWidget;

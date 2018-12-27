@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connectAll();
     setupTreeWidget();
     //NOTE in reales it shouldn't be
-    authDialog_->setPath(QString(IMG_PATH));
+    authDialog_->setPath(QString(USER_DEF_PATH));
 }
 
 MainWindow::~MainWindow()
