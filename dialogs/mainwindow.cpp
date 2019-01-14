@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     showMaximized();
 
+    QStandardItemModel *patModel = new QStandardItemModel;
+    ui->patients_tv->setModel(patModel);
     authDialog_ = new AuthDialog(db_);
     authDialog_->show();
 
@@ -27,7 +29,7 @@ void MainWindow::authAccepted()
 {
     setPatients(db_.getAllPatients());
     setPatientIDs(patients_);
-
+    updatePatientsTable(patients_);
     if(patients_.count() > 0)
     {
         int maxAge = 0;
@@ -324,4 +326,49 @@ void MainWindow::on_collapseAll_btn_clicked()
 void MainWindow::on_expandAll_btn_clicked()
 {
     twg_->expandAll();
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+    Q_UNUSED(event);
+    if(ui->patients_tv->model() != nullptr)
+    {
+        int colCnt = ui->patients_tv->model()->columnCount();
+        if(colCnt != 0)
+        {
+            int columnWidth = ui->patients_tv->width() / colCnt;
+            for(int i = 0; i < colCnt; i++)
+                ui->patients_tv->setColumnWidth(i, columnWidth);
+        }
+    }
+}
+
+void MainWindow::updatePatientsTable(const QMap<int, PatientInfo> &patients)
+{
+    QStandardItemModel *pModel = new QStandardItemModel;
+    QStringList pHeaders;
+    pHeaders << "ID" << "Пол" << "Возраст" << "Год заболевания" << "Количество изображений";
+    int iWidth = ui->patients_tv->width() / 5;
+    pModel->setHorizontalHeaderLabels(pHeaders);
+
+    QList<int> pIDs = patients.keys();
+    for(int pid : pIDs)
+    {
+        QList<QStandardItem*> pRow;
+        QStandardItem *idItem = new QStandardItem(QString::number(pid));
+        idItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+        QStandardItem *sexItem = new QStandardItem(QString(patients[pid].sex()));
+        sexItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+        QStandardItem *ageItem = new QStandardItem(QString::number(patients[pid].age()));
+        ageItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+        QStandardItem *dateOfIllItem = new QStandardItem(patients[pid].dateOfFallIll());
+        dateOfIllItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+        QStandardItem *imgCntItem = new QStandardItem(QString::number(patients[pid].getImages().count()));
+        imgCntItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+        pRow << idItem << sexItem << ageItem << dateOfIllItem << imgCntItem;
+        pModel->appendRow(pRow);
+    }
+    ui->patients_tv->setModel(pModel);
+    for(int i = 0; i < pModel->columnCount(); i++)
+        ui->patients_tv->setColumnWidth(i, iWidth);
 }

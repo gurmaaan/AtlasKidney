@@ -60,6 +60,10 @@ private:
     AuthDialog *authDialog_;
     DataBaseService db_;
 
+    void resizeEvent(QResizeEvent* event);
+
+    void updatePatientsTable(const QMap<int, PatientInfo> &patients);
+
     QMap<int, PatientInfo> patients_;
     QVector<int> patientIDs_;
     QVector<GraphicsObject> getPatientsGrObjVector(int pID, QString imageName, int maskID);

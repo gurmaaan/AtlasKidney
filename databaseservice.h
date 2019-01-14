@@ -26,8 +26,6 @@ private:
     bool visible_;
 };
 
-
-
 class PatientInfo
 {
 public:
